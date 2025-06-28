@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Why Us | JobNest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #1e112d;
+      color: white;
+    }
+
+    header {
+      background-color: #fff;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: #1e112d;
+      font-size: 24px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+    }
+
+    nav a {
+      color: #1e112d;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 0 15px;
+      position: relative;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #fff;
+      top: 28px;
+      left: 0;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 10px 20px;
+      color: #1e112d;
+      white-space: nowrap;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .content {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .content h2 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .content p {
+      font-size: 18px;
+      color: #cfcfcf;
+      margin-bottom: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: #3b2461;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: left;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .card h3 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #cfcfcf;
+      font-size: 16px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #1e112d;
+      color: #aaa;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>JobNest</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="whyus.html">Why Us</a>
+    <a href="features.html">Features</a>
+    <a href="contact.html">Contact</a>
+
+    <div class="dropdown">
+      <a href="#">Login ▾</a>
+      <div class="dropdown-content">
+        <a href="#">Login as HR</a>
+        <a href="#">Login as Student</a>
+        <a href="#">Login as Super Admin</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="content">
+  <h2>Why Choose JobNest?</h2>
+  <p>Your all-in-one hiring and career platform for HRs and students</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>For HR Professionals</h3>
+      <p>Manage payroll, leave, and attendance effortlessly with our intuitive dashboard tailored for HR needs.</p>
+    </div>
+
+    <div class="card">
+      <h3>AI Resume Shortlisting</h3>
+      <p>Use powerful AI to filter top resumes automatically, saving hours of manual effort.</p>
+    </div>
+
+    <div class="card">
+      <h3>Student Job Feed</h3>
+      <p>Students can explore job listings, apply easily, and track application status anytime.</p>
+    </div>
+
+    <div class="card">
+      <h3>Interview Tracker</h3>
+      <p>Track interview rounds, get reminders, and stay organized through every stage of hiring.</p>
+    </div>
+
+    <div class="card">
+      <h3>Resume Upload to Cloud</h3>
+      <p>Upload resumes securely to the cloud for fast access and streamlined hiring.</p>
+    </div>
+
+    <div class="card">
+      <h3>Smart Notifications</h3>
+      <p>Receive alerts for job matches, interview updates, and HR actions directly to your dashboard.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 JobNest. All rights reserved.
+</footer>
+
+</body>
+</html>

@@ -96,7 +96,7 @@
   <div class="login-box">
     <h2>HR Login</h2>
     <form id="hrLoginForm">
-  <input type="text" name="empid" placeholder="Employee ID" required>
+  <input type="email" name="email" placeholder="Email" required>
   <input type="password" name="password" placeholder="Password" required>
   <button type="submit">Login</button>
 </form>
@@ -130,11 +130,10 @@
 
   document.querySelector("form").addEventListener("submit", (e) => {
     e.preventDefault();
-    const empid = document.querySelector('input[name="empid"]').value;
+    const email = document.querySelector('input[name="email"]').value;
     const password = document.querySelector('input[name="password"]').value;
 
-    // Login using email (empid in this case is acting as email)
-    signInWithEmailAndPassword(auth, empid, password)
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         alert("HR Login Successful!");
         window.location.href = "HR Dashboard.html";
@@ -145,6 +144,7 @@
       });
   });
 </script>
+
 
 </body>
 </html>

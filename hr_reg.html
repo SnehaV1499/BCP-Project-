@@ -80,6 +80,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
@@ -93,36 +94,54 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   document.getElementById("hrRegisterForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const fullname = document.getElementById("fullname").value;
-    const empid = document.getElementById("empid").value;
+    const contact = document.getElementById("contact").value;
+    const dob = document.getElementById("dob").value;
+    const company = document.getElementById("company").value;
+    const experience = document.getElementById("experience").value;
+    const bio = document.getElementById("bio").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+    const profilePic = document.getElementById("profilePic").files[0];
+
+    if (!profilePic) {
+      alert("Please select a profile picture.");
+      return;
+    }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Upload profile picture
+      const storageRef = ref(storage, `hr_profile_pics/${user.uid}`);
+      await uploadBytes(storageRef, profilePic);
+      const profilePicURL = await getDownloadURL(storageRef);
+
+      // Save HR info to Firestore
       await setDoc(doc(db, "hr", user.uid), {
+        fullname,
+        contact,
+        dob,
+        company,
+        experience,
+        bio,
+        email,
+        profilePicURL,
         uid: user.uid,
-        fullname: fullname,
-        empid: empid,
-        email: email,
-        createdAt: new Date()
+        role: "HR"
       });
 
-      alert("HR registered successfully!");
+      alert("Registration successful! Redirecting to login...");
       window.location.href = "hr_login.html";
     } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        alert("This email is already registered. Please use a different one.");
-      } else {
-        alert("Registration error: " + error.message);
-      }
-      console.error(error);
+      console.error("Registration Error:", error);
+      alert("Registration failed: " + error.message);
     }
   });
 </script>

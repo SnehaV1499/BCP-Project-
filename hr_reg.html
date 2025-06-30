@@ -70,27 +70,7 @@
   </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
-    authDomain: "jobnest-bcp.firebaseapp.com",
-    projectId: "jobnest-bcp",
-    storageBucket: "jobnest-bcp.appspot.com", 
-    messagingSenderId: "574277449182",
-    appId: "1:574277449182:web:7dd3a3f193f1816119994f",
-    measurementId: "G-PHT950JW9D"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  // ... your imports and firebaseConfig code
 
   document.getElementById("hrRegisterForm").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -104,7 +84,6 @@
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Optional: Save extra HR info to Firestore
       await setDoc(doc(db, "hr", user.uid), {
         fullname: fullname,
         empid: empid,
@@ -115,9 +94,14 @@
       alert("HR registered successfully!");
       window.location.href = "hr_login.html";
     } catch (error) {
-      alert("Registration error: " + error.message);
+      if (error.code === "auth/email-already-in-use") {
+        alert("This email is already registered. Please use a different one.");
+      } else {
+        alert("Registration error: " + error.message);
+      }
     }
   });
 </script>
+
 </body>
 </html>

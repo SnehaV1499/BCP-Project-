@@ -28,9 +28,9 @@
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <h2>HR Dashboard</h2>
+    <a href="#" class="nav-link" data-section="profile">👤 My Profile</a>
     <a href="#" class="nav-link active" data-section="employee">👥 Employee Management</a>
     <a href="#" class="nav-link" data-section="leave">🗓 Leave Management</a>
     <a href="#" class="nav-link" data-section="posting">📢 Job Posting</a>
@@ -39,109 +39,51 @@
     <a href="#" class="nav-link" data-section="stats">📊 Dashboard Metrics</a>
     <div class="logout"><a href="index.html">← Logout</a></div>
   </div>
-
   <div class="main-content">
-    <!-- HR Profile Info -->
     <div class="card" style="margin-bottom: 20px;">
       <h2>Welcome, <span id="hr-name">Loading...</span></h2>
       <p><strong>Email:</strong> <span id="hr-email"></span></p>
       <p><strong>Employee ID:</strong> <span id="hr-empid"></span></p>
     </div>
-
-    <div id="employee" class="section active">
-      <h1>Employee Management</h1>
+    <div id="profile" class="section">
+      <h1>My Profile</h1>
       <div class="card">
-        <form>
-          <label>Employee ID</label>
-          <input type="text" placeholder="EMP001" />
-          <label>Name</label>
-          <input type="text" placeholder="John Doe" />
-          <label>Department</label>
-          <input type="text" placeholder="HR / IT / Marketing" />
-          <button>Add Employee</button>
+        <img id="profile-pic" src="" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 20px;" />
+        <p><strong>Name:</strong> <span id="profile-name"></span></p>
+        <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        <p><strong>Contact:</strong> <span id="profile-contact"></span></p>
+        <p><strong>Date of Birth:</strong> <span id="profile-dob"></span></p>
+        <p><strong>Company:</strong> <span id="profile-company"></span></p>
+        <p><strong>Experience:</strong> <span id="profile-experience"></span></p>
+        <p><strong>About Me:</strong> <span id="profile-bio"></span></p>
+        <button id="edit-profile-btn">Edit Profile</button>
+      </div>
+    </div>
+    <div id="edit-profile-section" class="section">
+      <h1>Edit Profile</h1>
+      <div class="card">
+        <form id="edit-profile-form">
+          <label>Full Name</label>
+          <input type="text" id="edit-name" />
+          <label>Contact</label>
+          <input type="text" id="edit-contact" />
+          <label>Date of Birth</label>
+          <input type="date" id="edit-dob" />
+          <label>Company</label>
+          <input type="text" id="edit-company" />
+          <label>Experience</label>
+          <input type="text" id="edit-experience" />
+          <label>Bio</label>
+          <textarea id="edit-bio"></textarea>
+          <button type="submit">Save Changes</button>
         </form>
-      </div>
-      <div class="card">
-        <h3>Current Employees</h3>
-        <table>
-          <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td>EMP001</td><td>Jane Smith</td><td>IT</td><td><button>Remove</button></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="leave" class="section">
-      <h1>Leave Management</h1>
-      <div class="card">
-        <h3>Pending Leave Requests</h3>
-        <table>
-          <thead><tr><th>Employee</th><th>From</th><th>To</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td>EMP002</td><td>2025-07-01</td><td>2025-07-03</td><td>Pending</td><td><button>Approve</button> <button>Reject</button></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="posting" class="section">
-      <h1>Job Posting</h1>
-      <div class="card">
-        <form>
-          <label>Job Title</label>
-          <input type="text" placeholder="Backend Developer" />
-          <label>Description</label>
-          <textarea placeholder="Enter job description here..."></textarea>
-          <label>Location</label>
-          <input type="text" placeholder="Chennai / Bangalore" />
-          <label>Skills Required</label>
-          <input type="text" placeholder="Java, Spring Boot" />
-          <button>Post Job</button>
-        </form>
-      </div>
-    </div>
-
-    <div id="interview" class="section">
-      <h1>Interview Tracker</h1>
-      <div class="card">
-        <table>
-          <thead><tr><th>Candidate</th><th>Job Role</th><th>Date</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Rahul K</td><td>Frontend Dev</td><td>2025-07-04</td><td>Scheduled</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="resumes" class="section">
-      <h1>Resume Review</h1>
-      <div class="card">
-        <table>
-          <thead><tr><th>Student</th><th>Resume</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td>Arjun R</td><td><a href="#">View Resume</a></td><td><button>Shortlist</button> <button>Reject</button></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="stats" class="section">
-      <h1>HR Dashboard Metrics</h1>
-      <div class="card">
-        <p>Total Employees: 15</p>
-        <p>Jobs Posted: 6</p>
-        <p>Interviews Scheduled: 4</p>
-        <p>Leaves Pending: 2</p>
       </div>
     </div>
   </div>
-
-  <!-- Firebase Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
@@ -156,15 +98,34 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    let currentHRId = "";
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const hrRef = doc(db, "hr", user.uid);
+        currentHRId = user.uid;
+        const hrRef = doc(db, "hr", currentHRId);
         const hrSnap = await getDoc(hrRef);
         if (hrSnap.exists()) {
           const hrData = hrSnap.data();
-          document.getElementById("hr-name").textContent = hrData.fullname;
+          document.getElementById("profile-pic").src = hrData.profilePicURL || "default.jpg";
+          document.getElementById("profile-name").textContent = hrData.fullname;
+          document.getElementById("profile-email").textContent = hrData.email;
+          document.getElementById("profile-contact").textContent = hrData.contact || "";
+          document.getElementById("profile-dob").textContent = hrData.dob || "";
+          document.getElementById("profile-company").textContent = hrData.company || "";
+          document.getElementById("profile-experience").textContent = hrData.experience || "";
+          document.getElementById("profile-bio").textContent = hrData.bio || "";
+
+          document.getElementById("hr-name").textContent = hrData.fullname || "HR";
           document.getElementById("hr-email").textContent = hrData.email;
-          document.getElementById("hr-empid").textContent = hrData.empid;
+          document.getElementById("hr-empid").textContent = hrData.empid || "N/A";
+
+          document.getElementById("edit-name").value = hrData.fullname || "";
+          document.getElementById("edit-contact").value = hrData.contact || "";
+          document.getElementById("edit-dob").value = hrData.dob || "";
+          document.getElementById("edit-company").value = hrData.company || "";
+          document.getElementById("edit-experience").value = hrData.experience || "";
+          document.getElementById("edit-bio").value = hrData.bio || "";
         } else {
           alert("No HR data found!");
         }
@@ -173,18 +134,40 @@
       }
     });
 
-    // Sidebar tab switching
+    document.getElementById("edit-profile-btn").addEventListener("click", () => {
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.getElementById("edit-profile-section").classList.add("active");
+    });
+
+    document.getElementById("edit-profile-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const updatedData = {
+        fullname: document.getElementById("edit-name").value,
+        contact: document.getElementById("edit-contact").value,
+        dob: document.getElementById("edit-dob").value,
+        company: document.getElementById("edit-company").value,
+        experience: document.getElementById("edit-experience").value,
+        bio: document.getElementById("edit-bio").value
+      };
+      try {
+        await updateDoc(doc(db, "hr", currentHRId), updatedData);
+        alert("Profile updated successfully!");
+        location.reload();
+      } catch (err) {
+        alert("Error updating profile: " + err.message);
+      }
+    });
+
     document.querySelectorAll(".nav-link").forEach(link => {
-      link.addEventListener("click", () => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
         document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
         link.classList.add("active");
-
+        const sectionId = link.getAttribute("data-section");
         document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
-        const section = document.getElementById(link.getAttribute("data-section"));
-        if (section) section.classList.add("active");
+        document.getElementById(sectionId).classList.add("active");
       });
     });
   </script>
-
 </body>
 </html>

@@ -131,17 +131,10 @@
     </div>
   </div>
 
-  <script>
-    const links = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.section');
-    links.forEach(link => {
-      link.addEventListener('click', () => {
-        links.forEach(l => l.classList.remove('active'));
-        sections.forEach(s => s.classList.remove('active'));
-        link.classList.add('active');
-        document.getElementById(link.dataset.section).classList.add('active');
-      });
-    });
-  </script>
+  <script type="module">
+  import { app, analytics } from './firebase.js';
+  console.log("Firebase initialized in this page");
+</script>
+
 </body>
 </html>

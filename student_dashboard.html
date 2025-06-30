@@ -162,12 +162,11 @@ $1
       });
     });
   </script>
-  <script>
-  function logout() {
-    localStorage.removeItem('loggedInStudent');
-    window.location.href = 'index.html'; // Go back to home/login
-  }
+ <script type="module">
+  import { app, analytics } from './firebase.js';
+  console.log("Firebase initialized in this page");
 </script>
+
 
 </body>
 </html>

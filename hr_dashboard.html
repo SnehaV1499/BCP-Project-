@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>HR Dashboard - JobNest</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
     body { display: flex; height: 100vh; background-color: #102033; color: white; }
@@ -28,6 +28,7 @@
   </style>
 </head>
 <body>
+
   <div class="sidebar">
     <h2>HR Dashboard</h2>
     <a href="#" class="nav-link active" data-section="employee">👥 Employee Management</a>
@@ -36,22 +37,27 @@
     <a href="#" class="nav-link" data-section="interview">📋 Interview Tracker</a>
     <a href="#" class="nav-link" data-section="resumes">📑 Resume Review</a>
     <a href="#" class="nav-link" data-section="stats">📊 Dashboard Metrics</a>
-    <div class="logout">
-      <a href="index.html">← Logout</a>
-    </div>
+    <div class="logout"><a href="index.html">← Logout</a></div>
   </div>
 
   <div class="main-content">
+    <!-- HR Profile Info -->
+    <div class="card" style="margin-bottom: 20px;">
+      <h2>Welcome, <span id="hr-name">Loading...</span></h2>
+      <p><strong>Email:</strong> <span id="hr-email"></span></p>
+      <p><strong>Employee ID:</strong> <span id="hr-empid"></span></p>
+    </div>
+
     <div id="employee" class="section active">
       <h1>Employee Management</h1>
       <div class="card">
         <form>
           <label>Employee ID</label>
-          <input type="text" placeholder="EMP001">
+          <input type="text" placeholder="EMP001" />
           <label>Name</label>
-          <input type="text" placeholder="John Doe">
+          <input type="text" placeholder="John Doe" />
           <label>Department</label>
-          <input type="text" placeholder="HR / IT / Marketing">
+          <input type="text" placeholder="HR / IT / Marketing" />
           <button>Add Employee</button>
         </form>
       </div>
@@ -84,13 +90,13 @@
       <div class="card">
         <form>
           <label>Job Title</label>
-          <input type="text" placeholder="Backend Developer">
+          <input type="text" placeholder="Backend Developer" />
           <label>Description</label>
           <textarea placeholder="Enter job description here..."></textarea>
           <label>Location</label>
-          <input type="text" placeholder="Chennai / Bangalore">
+          <input type="text" placeholder="Chennai / Bangalore" />
           <label>Skills Required</label>
-          <input type="text" placeholder="Java, Spring Boot">
+          <input type="text" placeholder="Java, Spring Boot" />
           <button>Post Job</button>
         </form>
       </div>
@@ -131,43 +137,54 @@
     </div>
   </div>
 
+  <!-- Firebase Script -->
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
-    authDomain: "jobnest-bcp.firebaseapp.com",
-    projectId: "jobnest-bcp",
-    storageBucket: "jobnest-bcp.appspot.com",
-    messagingSenderId: "574277449182",
-    appId: "1:574277449182:web:7dd3a3f193f1816119994f"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
+      authDomain: "jobnest-bcp.firebaseapp.com",
+      projectId: "jobnest-bcp",
+      storageBucket: "jobnest-bcp.appspot.com",
+      messagingSenderId: "574277449182",
+      appId: "1:574277449182:web:7dd3a3f193f1816119994f"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const hrRef = doc(db, "hr", user.uid);
-      const hrSnap = await getDoc(hrRef);
-
-      if (hrSnap.exists()) {
-        const hrData = hrSnap.data();
-        document.getElementById("hr-name").textContent = hrData.fullname;
-        document.getElementById("hr-email").textContent = hrData.email;
-        document.getElementById("hr-empid").textContent = hrData.empid;
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const hrRef = doc(db, "hr", user.uid);
+        const hrSnap = await getDoc(hrRef);
+        if (hrSnap.exists()) {
+          const hrData = hrSnap.data();
+          document.getElementById("hr-name").textContent = hrData.fullname;
+          document.getElementById("hr-email").textContent = hrData.email;
+          document.getElementById("hr-empid").textContent = hrData.empid;
+        } else {
+          alert("No HR data found!");
+        }
       } else {
-        alert("No HR data found!");
+        window.location.href = "hr_login.html";
       }
-    } else {
-      window.location.href = "hr_login.html";
-    }
-  });
-</script>
+    });
 
+    // Sidebar tab switching
+    document.querySelectorAll(".nav-link").forEach(link => {
+      link.addEventListener("click", () => {
+        document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
+
+        document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+        const section = document.getElementById(link.getAttribute("data-section"));
+        if (section) section.classList.add("active");
+      });
+    });
+  </script>
 
 </body>
 </html>

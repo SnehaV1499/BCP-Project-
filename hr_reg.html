@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HR Registration - JobNest</title>
+  <style>
+    body {
+      background-color: #1b103c;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .register-box {
+      background-color: #2a1e5c;
+      padding: 30px;
+      border-radius: 12px;
+      width: 380px;
+    }
+    .register-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      background: #4a3a7a;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #a383ff;
+      color: #1b103c;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .back-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .back-link a {
+      color: #a383ff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="register-box">
+    <h2>Register as HR</h2>
+    <form action="register_success.html" method="post">
+      <input type="text" placeholder="Full Name" required>
+      <input type="text" placeholder="Employee ID" required>
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Create Password" required>
+      <button type="submit">Register</button>
+    </form>
+    <div class="back-link">
+      <a href="hr_login.html">← Back to Login</a>
+    </div>
+  </div>
+
+</body>
+</html>

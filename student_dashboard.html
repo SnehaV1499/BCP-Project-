@@ -1,0 +1,149 @@
+<!-- Student Dashboard Full Implementation -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard - JobNest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { display: flex; height: 100vh; background-color: #1b103c; color: white; }
+    .sidebar { width: 230px; background-color: #2a1e5c; padding: 30px 20px; display: flex; flex-direction: column; }
+    .sidebar h2 { color: #a383ff; text-align: center; margin-bottom: 30px; }
+    .sidebar a { text-decoration: none; color: white; margin: 10px 0; padding: 10px 15px; border-radius: 6px; transition: background-color 0.2s; display: flex; align-items: center; }
+    .sidebar a:hover, .sidebar a.active { background-color: #a383ff; color: #1b103c; font-weight: bold; }
+    .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+    .main-content h1 { margin-bottom: 20px; font-size: 28px; border-bottom: 2px solid #a383ff; padding-bottom: 10px; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .logout { margin-top: auto; text-align: center; }
+    .logout a { color: #ccc; font-size: 14px; text-decoration: none; }
+    .logout a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 12px; text-align: left; }
+    input, select, textarea, button { padding: 10px; margin: 8px 0; width: 100%; border-radius: 6px; border: none; }
+    input, select, textarea { background-color: #4a3a7a; color: white; }
+    button { background-color: #a383ff; color: #1b103c; font-weight: bold; cursor: pointer; }
+    button:hover { background-color: #c1aaff; }
+    .profile-pic { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px; display: block; }
+    .job-card { background-color: #2a1e5c; padding: 20px; margin-bottom: 15px; border-radius: 10px; }
+    .job-card img { width: 60px; height: 60px; float: left; margin-right: 15px; border-radius: 10px; }
+    .job-card h3 { margin: 0; }
+    .job-card p { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>JobNest</h2>
+    <a href="#" class="nav-link active" data-section="profile">👤 Profile</a>
+    <a href="#" class="nav-link" data-section="home">🏠 Home</a>
+    <a href="#" class="nav-link" data-section="applied">📄 Applied Jobs</a>
+    <a href="#" class="nav-link" data-section="jobs">💼 Jobs</a>
+    <a href="#" class="nav-link" data-section="tracking">🚚 Job Tracking</a>
+    <div class="logout">
+      <a href="index.html">← Logout</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div id="profile" class="section active">
+      <h1>Your Profile</h1>
+      <label for="profile-pic">Profile Picture</label>
+<input type="file" id="profile-pic" accept="image/*">
+<br>
+$1
+      <form>
+        <label for="name">Full Name</label>
+        <input type="text" id="name" value="John Doe">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" value="john.doe@example.com">
+
+        <label for="mobile">Mobile Number</label>
+        <input type="text" id="mobile" value="9876543210">
+
+        <label for="skills">Skills</label>
+        <textarea id="skills">Java, Python, HTML</textarea>
+
+        <label for="resume">Upload Resume</label>
+        <input type="file" id="resume">
+
+        <button type="submit">Update Profile</button>
+      </form>
+    </div>
+
+    <div id="home" class="section">
+      <h1>Job Feed</h1>
+      <div class="job-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
+        <h3>Software Engineer - ABC Corp</h3>
+        <p><strong>HR:</strong> Priya Mehra</p>
+        <p><strong>Location:</strong> Bangalore</p>
+        <p>Join our growing dev team working on cloud-based platforms. Skills: Java, Spring Boot, REST APIs.</p>
+      </div>
+      <div class="job-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
+        <h3>UI/UX Designer - CreativeSoft</h3>
+        <p><strong>HR:</strong> Arjun R</p>
+        <p><strong>Location:</strong> Chennai</p>
+        <p>Design intuitive user interfaces and craft user experiences for mobile and web apps.</p>
+      </div>
+    </div>
+
+    <div id="applied" class="section">
+      <h1>Applied Jobs</h1>
+      <div class="job-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
+        <h3>Frontend Developer - XYZ Ltd</h3>
+        <p>ReactJS-based frontend development with dynamic components and API integration.</p>
+        <p><strong>Status:</strong> Under Review</p>
+      </div>
+    </div>
+
+    <div id="jobs" class="section">
+      <h1>Available Jobs</h1>
+      <div class="job-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
+        <h3>DevOps Engineer - TechSphere</h3>
+        <p>Work with Docker, Jenkins, and CI/CD pipelines. Location: Pune</p>
+        <button>Apply</button>
+      </div>
+      <div class="job-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
+        <h3>Backend Developer - NetLink</h3>
+        <p>Build scalable APIs using Node.js and MongoDB. Location: Hyderabad</p>
+        <button>Apply</button>
+      </div>
+    </div>
+
+    <div id="tracking" class="section">
+      <h1>Application Tracking</h1>
+      <div class="job-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
+        <h3>Java Developer - InfoSoft</h3>
+        <p>Backend application in Spring Boot. <strong>Status:</strong> Shortlisted</p>
+      </div>
+      <div class="job-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
+        <h3>UI Designer - UIStudios</h3>
+        <p>Figma-based design workflow. <strong>Status:</strong> Pending</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const links = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        links.forEach(l => l.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        link.classList.add('active');
+        document.getElementById(link.dataset.section).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

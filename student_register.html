@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Registration</title>
+  <style>
+    body {
+      background-color: #1b103c;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .register-box {
+      background-color: #2a1e5c;
+      padding: 30px;
+      border-radius: 12px;
+      width: 400px;
+    }
+    .register-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background-color: #4a3a7a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #a383ff;
+      color: #1b103c;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .back-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .back-link a {
+      color: #a383ff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="register-box">
+    <h2>Student Registration</h2>
+    <form action="register_success.html" method="post">
+      <input type="text" placeholder="Full Name" required>
+      <input type="text" placeholder="Student ID" required>
+      <input type="email" placeholder="Email ID" required>
+      <input type="password" placeholder="Create Password" required>
+      <button type="submit">Register</button>
+    </form>
+    <div class="back-link">
+      <a href="student_login.html">← Back to Login</a>
+    </div>
+  </div>
+
+</body>
+</html>

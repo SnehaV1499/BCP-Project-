@@ -131,6 +131,13 @@ $1
       </div>
     </div>
   </div>
+  <p>Welcome, <span id="studentName"></span>!</p>
+
+<script>
+  const student = localStorage.getItem('loggedInStudent');
+  document.getElementById('studentName').textContent = student || 'Student';
+</script>
+
 
   <script>
     const links = document.querySelectorAll('.nav-link');

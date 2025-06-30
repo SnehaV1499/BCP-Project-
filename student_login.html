@@ -66,6 +66,22 @@
     }
   </style>
 </head>
+  <script>
+  function studentLogin(event) {
+    event.preventDefault();
+
+    const studentId = document.querySelector('input[name="studentid"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+
+    if (studentId && password) {
+      localStorage.setItem('loggedInStudent', studentId);
+      window.location.href = 'student_dashboard.html';
+    } else {
+      alert("Please enter both Student ID and Password.");
+    }
+  }
+</script>
+
 <body>
   <div class="login-box">
     <h2>Student Login</h2>

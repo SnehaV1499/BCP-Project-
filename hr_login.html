@@ -112,38 +112,10 @@
     </div>
   </div>
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
-    authDomain: "jobnest-bcp.firebaseapp.com",
-    projectId: "jobnest-bcp",
-    storageBucket: "jobnest-bcp.appspot.com",
-    messagingSenderId: "574277449182",
-    appId: "1:574277449182:web:7dd3a3f193f1816119994f",
-    measurementId: "G-PHT950JW9D"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  document.querySelector("form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = document.querySelector('input[name="email"]').value;
-    const password = document.querySelector('input[name="password"]').value;
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        alert("HR Login Successful!");
-        window.location.href = "HR Dashboard.html";
-      })
-      .catch((error) => {
-        alert("Login failed: " + error.message);
-        console.error(error);
-      });
-  });
+  import { app, analytics } from './firebase.js';
+  console.log("Firebase initialized in this page");
 </script>
+
 
 
 </body>

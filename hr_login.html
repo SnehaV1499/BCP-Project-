@@ -91,27 +91,6 @@
     }
   </style>
 </head>
-  // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
-  authDomain: "jobnest-bcp.firebaseapp.com",
-  projectId: "jobnest-bcp",
-  storageBucket: "jobnest-bcp.firebasestorage.app",
-  messagingSenderId: "574277449182",
-  appId: "1:574277449182:web:7dd3a3f193f1816119994f",
-  measurementId: "G-PHT950JW9D"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 <body>
 
   <div class="login-box">
@@ -131,6 +110,40 @@ const analytics = getAnalytics(app);
       <a href="index.html">← Back to Home</a>
     </div>
   </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
+    authDomain: "jobnest-bcp.firebaseapp.com",
+    projectId: "jobnest-bcp",
+    storageBucket: "jobnest-bcp.appspot.com",
+    messagingSenderId: "574277449182",
+    appId: "1:574277449182:web:7dd3a3f193f1816119994f",
+    measurementId: "G-PHT950JW9D"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.querySelector("form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const empid = document.querySelector('input[name="empid"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+
+    // Login using email (empid in this case is acting as email)
+    signInWithEmailAndPassword(auth, empid, password)
+      .then((userCredential) => {
+        alert("HR Login Successful!");
+        window.location.href = "HR Dashboard.html";
+      })
+      .catch((error) => {
+        alert("Login failed: " + error.message);
+        console.error(error);
+      });
+  });
+</script>
 
 </body>
 </html>

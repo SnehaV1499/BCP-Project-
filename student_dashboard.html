@@ -36,6 +36,14 @@
   </style>
 </head>
 <body>
+  <script>
+  const student = localStorage.getItem('loggedInStudent');
+  if (!student) {
+    alert("Please login first.");
+    window.location.href = 'student_login.html';
+  }
+</script>
+
   <div class="sidebar">
     <h2>JobNest</h2>
     <a href="#" class="nav-link active" data-section="profile">👤 Profile</a>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HR Dashboard - JobNest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { display: flex; height: 100vh; background-color: #102033; color: white; }
+    .sidebar { width: 240px; background-color: #1f2a40; padding: 25px 20px; display: flex; flex-direction: column; }
+    .sidebar h2 { color: #85c1ff; text-align: center; margin-bottom: 30px; }
+    .sidebar a { text-decoration: none; color: white; margin: 10px 0; padding: 10px 15px; border-radius: 6px; transition: background-color 0.2s; display: flex; align-items: center; }
+    .sidebar a:hover, .sidebar a.active { background-color: #85c1ff; color: #102033; font-weight: bold; }
+    .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+    .main-content h1 { margin-bottom: 20px; font-size: 28px; border-bottom: 2px solid #85c1ff; padding-bottom: 10px; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .logout { margin-top: auto; text-align: center; }
+    .logout a { color: #ccc; font-size: 14px; text-decoration: none; }
+    .logout a:hover { text-decoration: underline; }
+    input, select, textarea, button { padding: 10px; margin: 8px 0; width: 100%; border-radius: 6px; border: none; }
+    input, select, textarea { background-color: #28445c; color: white; }
+    button { background-color: #85c1ff; color: #102033; font-weight: bold; cursor: pointer; }
+    button:hover { background-color: #b6dcff; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    .card { background-color: #21394e; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>HR Dashboard</h2>
+    <a href="#" class="nav-link active" data-section="employee">👥 Employee Management</a>
+    <a href="#" class="nav-link" data-section="leave">🗓 Leave Management</a>
+    <a href="#" class="nav-link" data-section="posting">📢 Job Posting</a>
+    <a href="#" class="nav-link" data-section="interview">📋 Interview Tracker</a>
+    <a href="#" class="nav-link" data-section="resumes">📑 Resume Review</a>
+    <a href="#" class="nav-link" data-section="stats">📊 Dashboard Metrics</a>
+    <div class="logout">
+      <a href="index.html">← Logout</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div id="employee" class="section active">
+      <h1>Employee Management</h1>
+      <div class="card">
+        <form>
+          <label>Employee ID</label>
+          <input type="text" placeholder="EMP001">
+          <label>Name</label>
+          <input type="text" placeholder="John Doe">
+          <label>Department</label>
+          <input type="text" placeholder="HR / IT / Marketing">
+          <button>Add Employee</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Current Employees</h3>
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>EMP001</td><td>Jane Smith</td><td>IT</td><td><button>Remove</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="leave" class="section">
+      <h1>Leave Management</h1>
+      <div class="card">
+        <h3>Pending Leave Requests</h3>
+        <table>
+          <thead><tr><th>Employee</th><th>From</th><th>To</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>EMP002</td><td>2025-07-01</td><td>2025-07-03</td><td>Pending</td><td><button>Approve</button> <button>Reject</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="posting" class="section">
+      <h1>Job Posting</h1>
+      <div class="card">
+        <form>
+          <label>Job Title</label>
+          <input type="text" placeholder="Backend Developer">
+          <label>Description</label>
+          <textarea placeholder="Enter job description here..."></textarea>
+          <label>Location</label>
+          <input type="text" placeholder="Chennai / Bangalore">
+          <label>Skills Required</label>
+          <input type="text" placeholder="Java, Spring Boot">
+          <button>Post Job</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="interview" class="section">
+      <h1>Interview Tracker</h1>
+      <div class="card">
+        <table>
+          <thead><tr><th>Candidate</th><th>Job Role</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Rahul K</td><td>Frontend Dev</td><td>2025-07-04</td><td>Scheduled</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="resumes" class="section">
+      <h1>Resume Review</h1>
+      <div class="card">
+        <table>
+          <thead><tr><th>Student</th><th>Resume</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>Arjun R</td><td><a href="#">View Resume</a></td><td><button>Shortlist</button> <button>Reject</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="stats" class="section">
+      <h1>HR Dashboard Metrics</h1>
+      <div class="card">
+        <p>Total Employees: 15</p>
+        <p>Jobs Posted: 6</p>
+        <p>Interviews Scheduled: 4</p>
+        <p>Leaves Pending: 2</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const links = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        links.forEach(l => l.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        link.classList.add('active');
+        document.getElementById(link.dataset.section).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

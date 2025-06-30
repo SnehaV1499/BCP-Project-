@@ -70,7 +70,22 @@
   </div>
 
 <script type="module">
-  // ... your imports and firebaseConfig code
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
+    authDomain: "jobnest-bcp.firebaseapp.com",
+    projectId: "jobnest-bcp",
+    storageBucket: "jobnest-bcp.appspot.com",
+    messagingSenderId: "574277449182",
+    appId: "1:574277449182:web:7dd3a3f193f1816119994f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
   document.getElementById("hrRegisterForm").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -85,6 +100,7 @@
       const user = userCredential.user;
 
       await setDoc(doc(db, "hr", user.uid), {
+        uid: user.uid,
         fullname: fullname,
         empid: empid,
         email: email,
@@ -99,6 +115,7 @@
       } else {
         alert("Registration error: " + error.message);
       }
+      console.error(error);
     }
   });
 </script>

@@ -57,17 +57,69 @@
 
   <div class="register-box">
     <h2>Register as HR</h2>
-    <form action="register_success.html" method="get">
-      <input type="text" placeholder="Full Name" required>
-      <input type="text" placeholder="Employee ID" required>
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Create Password" required>
+    <form id="hrRegisterForm">
+      <input type="text" id="fullname" placeholder="Full Name" required>
+      <input type="text" id="empid" placeholder="Employee ID" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Create Password" required>
       <button type="submit">Register</button>
     </form>
     <div class="back-link">
       <a href="hr_login.html">← Back to Login</a>
     </div>
   </div>
+
+  <script type="module">
+    // Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
+      authDomain: "jobnest-bcp.firebaseapp.com",
+      projectId: "jobnest-bcp",
+      storageBucket: "jobnest-bcp.appspot.com",
+      messagingSenderId: "574277449182",
+      appId: "1:574277449182:web:7dd3a3f193f1816119994f",
+      measurementId: "G-PHT950JW9D"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Form submission
+    document.getElementById('hrRegisterForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById('fullname').value;
+      const empId = document.getElementById('empid').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Save additional info in Firestore
+        await setDoc(doc(db, "hr_users", user.uid), {
+          fullName: fullName,
+          empId: empId,
+          email: email
+        });
+
+        alert("Registered successfully as HR!");
+        window.location.href = "hr_login.html";
+
+      } catch (error) {
+        alert("Error: " + error.message);
+        console.error("Registration failed", error);
+      }
+    });
+  </script>
 
 </body>
 </html>

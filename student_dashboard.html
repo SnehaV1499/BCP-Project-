@@ -12,6 +12,8 @@
     .sidebar h2 { color: #a383ff; text-align: center; margin-bottom: 30px; }
     .sidebar a { text-decoration: none; color: white; margin: 10px 0; padding: 10px 15px; border-radius: 6px; transition: background-color 0.2s; display: flex; align-items: center; }
     .sidebar a:hover, .sidebar a.active { background-color: #a383ff; color: #1b103c; font-weight: bold; }
+    <a href="#" onclick="logout()">🚪 Logout</a>
+
     .main-content { flex: 1; padding: 30px; overflow-y: auto; }
     .main-content h1 { margin-bottom: 20px; font-size: 28px; border-bottom: 2px solid #a383ff; padding-bottom: 10px; }
     .section { display: none; }
@@ -152,5 +154,12 @@ $1
       });
     });
   </script>
+  <script>
+  function logout() {
+    localStorage.removeItem('loggedInStudent');
+    window.location.href = 'index.html'; // Go back to home/login
+  }
+</script>
+
 </body>
 </html>

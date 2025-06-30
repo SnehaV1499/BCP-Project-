@@ -57,13 +57,20 @@
 
   <div class="register-box">
     <h2>Register as HR</h2>
-    <form id="hrRegisterForm">
-      <input type="text" id="fullname" placeholder="Full Name" required>
-      <input type="text" id="empid" placeholder="Employee ID" required>
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Create Password" required>
-      <button type="submit">Register</button>
-    </form>
+    <form id="hrRegisterForm" enctype="multipart/form-data">
+  <input type="text" id="fullname" placeholder="Full Name" required>
+  <input type="text" id="contact" placeholder="Contact Number" required>
+  <input type="date" id="dob" required>
+  <input type="text" id="company" placeholder="Company Name" required>
+  <input type="text" id="experience" placeholder="Years of Experience" required>
+  <textarea id="bio" placeholder="Brief Bio" required></textarea>
+  <label for="profilePic">Upload Profile Picture:</label>
+  <input type="file" id="profilePic" accept="image/*" required>
+  <input type="email" id="email" placeholder="Email" required>
+  <input type="password" id="password" placeholder="Create Password" required>
+  <button type="submit">Register</button>
+</form>
+
     <div class="back-link">
       <a href="hr_login.html">← Back to Login</a>
     </div>

@@ -97,88 +97,89 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
-      authDomain: "jobnest-bcp.firebaseapp.com",
-      projectId: "jobnest-bcp",
-      storageBucket: "jobnest-bcp.appspot.com",
-      messagingSenderId: "574277449182",
-      appId: "1:574277449182:web:7dd3a3f193f1816119994f"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
+    authDomain: "jobnest-bcp.firebaseapp.com",
+    projectId: "jobnest-bcp",
+    storageBucket: "jobnest-bcp.appspot.com",
+    messagingSenderId: "574277449182",
+    appId: "1:574277449182:web:7dd3a3f193f1816119994f"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
-    document.getElementById("hrRegisterForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+  document.getElementById("hrRegisterForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const submitButton = e.target.querySelector('button[type="submit"]');
-      submitButton.disabled = true; // prevent double submission
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
 
-      const fullname = document.getElementById("fullname").value.trim();
-      const contact = document.getElementById("contact").value.trim();
-      const dob = document.getElementById("dob").value;
-      const company = document.getElementById("company").value.trim();
-      const experience = document.getElementById("experience").value.trim();
-      const bio = document.getElementById("bio").value.trim();
-      const email = document.getElementById("email").value.trim().toLowerCase();
-      const password = document.getElementById("password").value;
-      const profilePic = document.getElementById("profilePic").files[0];
+    const fullname = document.getElementById("fullname").value.trim();
+    const contact = document.getElementById("contact").value.trim();
+    const dob = document.getElementById("dob").value;
+    const company = document.getElementById("company").value.trim();
+    const experience = document.getElementById("experience").value.trim();
+    const bio = document.getElementById("bio").value.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value;
+    const profilePic = document.getElementById("profilePic").files[0];
 
-      if (!profilePic) {
-        alert("Please upload a profile picture.");
-        submitButton.disabled = false;
-        return;
-      }
+    if (!profilePic) {
+      alert("Please upload a profile picture.");
+      submitButton.disabled = false;
+      return;
+    }
 
-      console.log("Trying to register with:", email);
+    try {
+      console.log("Registering:", email);
 
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-        const storageRef = ref(storage, `hr_profile_pics/${user.uid}`);
-        await uploadBytes(storageRef, profilePic);
-        const profilePicURL = await getDownloadURL(storageRef);
+      const storageRef = ref(storage, `hr_profile_pics/${user.uid}`);
+      await uploadBytes(storageRef, profilePic);
+      const profilePicURL = await getDownloadURL(storageRef);
 
-        await setDoc(doc(db, "hr", user.uid), {
-          fullname,
-          contact,
-          dob,
-          company,
-          experience,
-          bio,
-          email,
-          profilePicURL,
-          uid: user.uid,
-          role: "HR",
-          createdAt: new Date()
-        });
+      await setDoc(doc(db, "hr", user.uid), {
+        fullname,
+        contact,
+        dob,
+        company,
+        experience,
+        bio,
+        email,
+        profilePicURL,
+        uid: user.uid,
+        role: "HR",
+        createdAt: new Date()
+      });
 
-        window.location.href = "hr_success.html";
+      window.location.href = "hr_success.html";
 
-      } catch (error) {
-        console.error("Registration Error:", error.code, error.message);
+    } catch (error) {
+      console.error("Firebase Error:", error.code, error.message);
 
-        if (error.code === "auth/email-already-in-use") {
-          if (confirm("This email is already registered. Would you like to go to the login page?")) {
-            window.location.href = "hr_login.html";
-          }
-        } else {
-          alert("Registration failed: " + error.message);
+      if (error.code === "auth/email-already-in-use") {
+        if (confirm("This email is already registered. Go to login?")) {
+          window.location.href = "hr_login.html";
         }
-
-        submitButton.disabled = false; // Re-enable on error
+      } else {
+        alert("Error: " + error.message);
       }
-    });
-  </script>
+
+      submitButton.disabled = false;
+    }
+  });
+</script>
+
 </body>
 </html>

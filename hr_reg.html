@@ -1,81 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>HR Registration - JobNest</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap');
-
     * {
-      margin: 0;
-      padding: 0;
       box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      background: url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
-      background-size: cover;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1400&q=80') no-repeat center center/cover;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      color: #fff;
     }
 
     .register-box {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 40px;
       border-radius: 16px;
-      padding: 30px;
-      width: 420px;
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-      backdrop-filter: blur(10px);
-      color: white;
+      width: 400px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
     }
 
     .register-box h2 {
       text-align: center;
-      margin-bottom: 20px;
-      font-weight: 600;
+      margin-bottom: 30px;
+      color: #e0e0ff;
     }
 
     input, textarea {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      border: none;
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      background: rgba(255, 255, 255, 0.15);
       color: #fff;
+      font-size: 15px;
     }
 
     input::placeholder, textarea::placeholder {
-      color: rgba(255, 255, 255, 0.8);
+      color: #ccc;
     }
 
-    textarea {
-      resize: vertical;
-    }
-
-    label {
-      font-size: 14px;
-      color: #eee;
+    input[type="file"] {
+      background: transparent;
+      padding: 0;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      margin-top: 10px;
+      background-color: #8f68ff;
+      color: white;
+      font-weight: bold;
       border: none;
       border-radius: 8px;
-      background-color: #ffffff;
-      color: #1b103c;
-      font-weight: bold;
+      margin-top: 10px;
       cursor: pointer;
-      transition: 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #e0d3ff;
+      font-size: 16px;
     }
 
     .back-link {
@@ -84,8 +74,11 @@
     }
 
     .back-link a {
-      color: #fff;
-      text-decoration: underline;
+      color: #c3b8ff;
+      text-decoration: none;
+    }
+
+    label {
       font-size: 14px;
     }
   </style>
@@ -95,19 +88,18 @@
   <div class="register-box">
     <h2>Register as HR</h2>
     <form id="hrRegisterForm" enctype="multipart/form-data">
-      <input type="text" id="fullname" placeholder="Full Name" required />
-      <input type="text" id="contact" placeholder="Contact Number" required />
-      <input type="date" id="dob" required />
-      <input type="text" id="company" placeholder="Company Name" required />
-      <input type="text" id="experience" placeholder="Years of Experience" required />
+      <input type="text" id="fullname" placeholder="Full Name" required>
+      <input type="text" id="contact" placeholder="Contact Number" required>
+      <input type="date" id="dob" required>
+      <input type="text" id="company" placeholder="Company Name" required>
+      <input type="text" id="experience" placeholder="Years of Experience" required>
       <textarea id="bio" placeholder="Brief Bio" required></textarea>
       <label for="profilePic">Upload Profile Picture:</label>
-      <input type="file" id="profilePic" accept="image/*" required />
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Create Password" required />
+      <input type="file" id="profilePic" accept="image/*" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Create Password" required>
       <button type="submit">Register</button>
     </form>
-
     <div class="back-link">
       <a href="hr_login.html">← Back to Login</a>
     </div>
@@ -147,7 +139,7 @@
       const profilePic = document.getElementById("profilePic").files[0];
 
       if (!profilePic) {
-        alert("Please select a profile picture.");
+        alert("Please upload a profile picture.");
         return;
       }
 
@@ -160,17 +152,16 @@
         const profilePicURL = await getDownloadURL(storageRef);
 
         await setDoc(doc(db, "hr", user.uid), {
-          uid: user.uid,
-          email,
           fullname,
           contact,
           dob,
           company,
           experience,
           bio,
+          email,
           profilePicURL,
+          uid: user.uid,
           role: "HR",
-          empid: Math.floor(1000 + Math.random() * 9000).toString(),
           createdAt: new Date()
         });
 

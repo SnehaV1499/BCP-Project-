@@ -120,20 +120,26 @@
     document.getElementById("hrRegisterForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const fullname = document.getElementById("fullname").value;
-      const contact = document.getElementById("contact").value;
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      submitButton.disabled = true; // prevent double submission
+
+      const fullname = document.getElementById("fullname").value.trim();
+      const contact = document.getElementById("contact").value.trim();
       const dob = document.getElementById("dob").value;
-      const company = document.getElementById("company").value;
-      const experience = document.getElementById("experience").value;
-      const bio = document.getElementById("bio").value;
-      const email = document.getElementById("email").value;
+      const company = document.getElementById("company").value.trim();
+      const experience = document.getElementById("experience").value.trim();
+      const bio = document.getElementById("bio").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
       const password = document.getElementById("password").value;
       const profilePic = document.getElementById("profilePic").files[0];
 
       if (!profilePic) {
         alert("Please upload a profile picture.");
+        submitButton.disabled = false;
         return;
       }
+
+      console.log("Trying to register with:", email);
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -157,17 +163,20 @@
           createdAt: new Date()
         });
 
-        // Go to success page
         window.location.href = "hr_success.html";
+
       } catch (error) {
-        console.error("Registration Error:", error);
+        console.error("Registration Error:", error.code, error.message);
 
         if (error.code === "auth/email-already-in-use") {
-          alert("Email already registered. Please login.");
-          window.location.href = "hr_login.html";
+          if (confirm("This email is already registered. Would you like to go to the login page?")) {
+            window.location.href = "hr_login.html";
+          }
         } else {
           alert("Registration failed: " + error.message);
         }
+
+        submitButton.disabled = false; // Re-enable on error
       }
     });
   </script>

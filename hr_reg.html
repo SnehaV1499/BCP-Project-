@@ -4,87 +4,79 @@
   <meta charset="UTF-8">
   <title>HR Registration - JobNest</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1400&q=80') no-repeat center center/cover;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=80') no-repeat center center/cover;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #fff;
+      color: white;
     }
 
     .register-box {
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(12px);
-      padding: 40px;
-      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 30px;
+      border-radius: 12px;
       width: 400px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
     }
 
     .register-box h2 {
       text-align: center;
-      margin-bottom: 30px;
-      color: #e0e0ff;
+      margin-bottom: 20px;
+      color: #ffc107;
     }
 
     input, textarea {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       margin: 10px 0;
-      border-radius: 8px;
       border: none;
-      background: rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
       color: #fff;
-      font-size: 15px;
     }
 
     input::placeholder, textarea::placeholder {
       color: #ccc;
     }
 
-    input[type="file"] {
-      background: transparent;
-      padding: 0;
+    label {
+      font-size: 14px;
+      display: block;
+      margin-top: 10px;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      background-color: #8f68ff;
-      color: white;
+      background-color: #ffc107;
+      color: #000;
       font-weight: bold;
       border: none;
       border-radius: 8px;
-      margin-top: 10px;
+      margin-top: 15px;
       cursor: pointer;
-      font-size: 16px;
     }
 
     .back-link {
       text-align: center;
-      margin-top: 15px;
+      margin-top: 10px;
     }
 
     .back-link a {
-      color: #c3b8ff;
+      color: #ffc107;
       text-decoration: none;
-    }
-
-    label {
-      font-size: 14px;
     }
   </style>
 </head>
 <body>
-
   <div class="register-box">
     <h2>Register as HR</h2>
     <form id="hrRegisterForm" enctype="multipart/form-data">
@@ -165,15 +157,19 @@
           createdAt: new Date()
         });
 
-        // Show success message and redirect
-        alert("Registration successful! You can now log in as HR.");
-        window.location.href = "hr_login.html";
+        // Go to success page
+        window.location.href = "hr_success.html";
       } catch (error) {
         console.error("Registration Error:", error);
-        alert("Registration failed: " + error.message);
+
+        if (error.code === "auth/email-already-in-use") {
+          alert("Email already registered. Please login.");
+          window.location.href = "hr_login.html";
+        } else {
+          alert("Registration failed: " + error.message);
+        }
       }
     });
   </script>
-
 </body>
 </html>

@@ -71,61 +71,34 @@
     <div class="logout"><a href="index.html">← Logout</a></div>
   </div>
   <div class="main-content">
-    <div class="card">
-      <h2>Welcome, <span id="hr-name">Loading...</span></h2>
-      <p><strong>Email:</strong> <span id="hr-email"></span></p>
-      <p><strong>Employee ID:</strong> <span id="hr-empid"></span></p>
-    </div>
-
-    <div id="profile" class="section active">
-      <h1>My Profile</h1>
+    <div id="employee" class="section active">
+      <h1>Employee Management</h1>
       <div class="card">
-        <div style="display: flex; align-items: center; gap: 30px;">
-          <img id="profile-pic" src="default.jpg" alt="Profile Picture" />
-          <div>
-            <p><strong>Name:</strong> <span id="profile-name"></span></p>
-            <p><strong>Email:</strong> <span id="profile-email"></span></p>
-            <p><strong>Contact:</strong> <span id="profile-contact"></span></p>
-            <p><strong>DOB:</strong> <span id="profile-dob"></span></p>
-            <p><strong>Company:</strong> <span id="profile-company"></span></p>
-            <p><strong>Experience:</strong> <span id="profile-experience"></span></p>
-            <p><strong>About Me:</strong> <span id="profile-bio"></span></p>
-            <button id="edit-profile-btn">Edit Profile</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="edit-profile-section" class="section">
-      <h1>Edit Profile</h1>
-      <div class="card">
-        <form id="edit-profile-form">
-          <label>Full Name</label><input type="text" id="edit-name" />
-          <label>Contact</label><input type="text" id="edit-contact" />
-          <label>Date of Birth</label><input type="date" id="edit-dob" />
-          <label>Company</label><input type="text" id="edit-company" />
-          <label>Experience</label><input type="text" id="edit-experience" />
-          <label>Bio</label><textarea id="edit-bio"></textarea>
-          <button type="submit">Save Changes</button>
+        <h2>Add Employee</h2>
+        <form id="add-employee-form">
+          <input type="text" id="emp-name" placeholder="Employee Name" required />
+          <input type="email" id="emp-email" placeholder="Employee Email" required />
+          <input type="text" id="emp-id" placeholder="Employee ID" required />
+          <input type="text" id="emp-designation" placeholder="Designation" required />
+          <input type="text" id="emp-contact" placeholder="Contact Number" required />
+          <button type="submit">Add Employee</button>
         </form>
       </div>
+      <div class="card">
+        <h2>Employee List</h2>
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Email</th><th>ID</th><th>Designation</th><th>Contact</th><th>Action</th></tr>
+          </thead>
+          <tbody id="employee-table-body"></tbody>
+        </table>
+      </div>
     </div>
-
-    <div id="employee" class="section"><h1>Employee Management</h1><div class="card"><p>Manage employees here.</p></div></div>
-    <div id="leave" class="section"><h1>Leave Management</h1><div class="card"><p>View and approve leave requests.</p></div></div>
-    <div id="posting" class="section"><h1>Job Posting</h1><div class="card"><form id="jobPostForm"><input type="text" id="jobTitle" placeholder="Job Title" /><textarea id="jobDesc" placeholder="Job Description"></textarea><button type="submit">Post Job</button></form></div></div>
-    <div id="interview" class="section"><h1>Interview Tracker</h1><div class="card"><p>Track interview progress here.</p></div></div>
-    <div id="resumes" class="section"><h1>Resume Review</h1><div class="card"><p>View and shortlist candidate resumes.</p></div></div>
-    <div id="stats" class="section"><h1>Dashboard Metrics</h1><div class="card">
-      <p>Total Jobs Posted: <span id="total-jobs">Loading...</span></p>
-      <p>Total Applications Received: <span id="total-apps">Loading...</span></p>
-    </div></div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
@@ -137,108 +110,52 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
-    let currentHRId = "";
+    const empRef = collection(db, "employees");
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentHRId = user.uid;
-        const hrRef = doc(db, "hr", currentHRId);
-        const hrSnap = await getDoc(hrRef);
-        if (hrSnap.exists()) {
-          const hrData = hrSnap.data();
-          document.getElementById("profile-pic").src = hrData.profilePicURL || "default.jpg";
-          document.getElementById("profile-name").textContent = hrData.fullname || "";
-          document.getElementById("profile-email").textContent = hrData.email || "";
-          document.getElementById("profile-contact").textContent = hrData.contact || "";
-          document.getElementById("profile-dob").textContent = hrData.dob || "";
-          document.getElementById("profile-company").textContent = hrData.company || "";
-          document.getElementById("profile-experience").textContent = hrData.experience || "";
-          document.getElementById("profile-bio").textContent = hrData.bio || "";
+    const form = document.getElementById("add-employee-form");
+    const tableBody = document.getElementById("employee-table-body");
 
-          document.getElementById("hr-name").textContent = hrData.fullname || "HR";
-          document.getElementById("hr-email").textContent = hrData.email;
-          document.getElementById("hr-empid").textContent = hrData.empid || "N/A";
-
-          document.getElementById("edit-name").value = hrData.fullname || "";
-          document.getElementById("edit-contact").value = hrData.contact || "";
-          document.getElementById("edit-dob").value = hrData.dob || "";
-          document.getElementById("edit-company").value = hrData.company || "";
-          document.getElementById("edit-experience").value = hrData.experience || "";
-          document.getElementById("edit-bio").value = hrData.bio || "";
-
-          // Count Job Posts
-          const jobQuery = query(collection(db, "jobPosts"), where("postedBy", "==", currentHRId));
-          const jobSnap = await getDocs(jobQuery);
-          document.getElementById("total-jobs").textContent = jobSnap.size;
-
-          // Count Applications
-          let totalApplications = 0;
-          for (const jobDoc of jobSnap.docs) {
-            const appRef = collection(db, "applications", jobDoc.id, "users");
-            const appSnap = await getDocs(appRef);
-            totalApplications += appSnap.size;
-          }
-          document.getElementById("total-apps").textContent = totalApplications;
-        }
-      }
-    });
-
-    document.getElementById("edit-profile-btn").addEventListener("click", () => {
-      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-      document.getElementById("edit-profile-section").classList.add("active");
-    });
-
-    document.getElementById("edit-profile-form").addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const updatedData = {
-        fullname: document.getElementById("edit-name").value,
-        contact: document.getElementById("edit-contact").value,
-        dob: document.getElementById("edit-dob").value,
-        company: document.getElementById("edit-company").value,
-        experience: document.getElementById("edit-experience").value,
-        bio: document.getElementById("edit-bio").value
-      };
-      try {
-        await updateDoc(doc(db, "hr", currentHRId), updatedData);
-        alert("Profile updated successfully!");
-        location.reload();
-      } catch (err) {
-        alert("Error updating profile: " + err.message);
-      }
+      const name = document.getElementById("emp-name").value.trim();
+      const email = document.getElementById("emp-email").value.trim();
+      const empId = document.getElementById("emp-id").value.trim();
+      const designation = document.getElementById("emp-designation").value.trim();
+      const contact = document.getElementById("emp-contact").value.trim();
+
+      await addDoc(empRef, { name, email, empId, designation, contact });
+      alert("✅ Employee Added");
+      form.reset();
+      loadEmployees();
     });
 
-    document.getElementById("jobPostForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const jobTitle = document.getElementById("jobTitle").value;
-      const jobDesc = document.getElementById("jobDesc").value;
-      const jobData = {
-        title: jobTitle,
-        description: jobDesc,
-        postedBy: currentHRId,
-        timestamp: new Date().toISOString()
-      };
-      try {
-        const newJobRef = doc(collection(db, "jobPosts"));
-        await setDoc(newJobRef, jobData);
-        alert("Job posted successfully!");
-        document.getElementById("jobPostForm").reset();
-      } catch (err) {
-        alert("Error posting job: " + err.message);
-      }
-    });
-
-    document.querySelectorAll(".nav-link").forEach(link => {
-      link.addEventListener("click", e => {
-        e.preventDefault();
-        document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
-        link.classList.add("active");
-        const sectionId = link.getAttribute("data-section");
-        document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
-        document.getElementById(sectionId).classList.add("active");
+    async function loadEmployees() {
+      tableBody.innerHTML = "";
+      const snapshot = await getDocs(empRef);
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${data.name}</td>
+          <td>${data.email}</td>
+          <td>${data.empId}</td>
+          <td>${data.designation}</td>
+          <td>${data.contact}</td>
+          <td><button onclick="deleteEmployee('${docSnap.id}')">🗑 Delete</button></td>
+        `;
+        tableBody.appendChild(row);
       });
-    });
+    }
+
+    window.deleteEmployee = async (id) => {
+      if (confirm("Are you sure you want to delete this employee?")) {
+        await deleteDoc(doc(db, "employees", id));
+        loadEmployees();
+      }
+    };
+
+    loadEmployees();
   </script>
 </body>
 </html>

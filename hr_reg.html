@@ -79,15 +79,13 @@
 <body>
   <div class="register-box">
     <h2>Register as HR</h2>
-    <form id="hrRegisterForm" enctype="multipart/form-data">
+    <form id="hrRegisterForm">
       <input type="text" id="fullname" placeholder="Full Name" required />
       <input type="text" id="contact" placeholder="Contact Number" required />
       <input type="date" id="dob" required />
       <input type="text" id="company" placeholder="Company Name" required />
       <input type="text" id="experience" placeholder="Years of Experience" required />
       <textarea id="bio" placeholder="Brief Bio" required></textarea>
-      <label for="profilePic">Upload Profile Picture:</label>
-      <input type="file" id="profilePic" accept="image/*" required />
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="password" placeholder="Create Password" required />
       <button type="submit">Register</button>
@@ -101,7 +99,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
@@ -115,11 +112,9 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
     document.getElementById("hrRegisterForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const submitButton = e.target.querySelector('button[type="submit"]');
       submitButton.disabled = true;
 
@@ -131,23 +126,10 @@
       const bio = document.getElementById("bio").value.trim();
       const email = document.getElementById("email").value.trim().toLowerCase();
       const password = document.getElementById("password").value;
-      const profilePic = document.getElementById("profilePic").files[0];
-
-      if (!profilePic) {
-        alert("Please upload a profile picture.");
-        submitButton.disabled = false;
-        return;
-      }
 
       try {
-        console.log("🔥 Registering:", email);
-
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-
-        const storageRef = ref(storage, `hr_profile_pics/${user.uid}`);
-        await uploadBytes(storageRef, profilePic);
-        const profilePicURL = await getDownloadURL(storageRef);
 
         await setDoc(doc(db, "hr", user.uid), {
           fullname,
@@ -157,18 +139,17 @@
           experience,
           bio,
           email,
-          profilePicURL,
+          profilePicURL: "N/A", // Placeholder
           uid: user.uid,
           role: "HR",
           createdAt: new Date()
         });
 
         alert("✅ Registration successful!");
-        window.location.href = "hr_success.html";  // Make sure this file exists
+        window.location.href = "hr_success.html"; // This file should exist
 
       } catch (error) {
         console.error("❌ Firebase Error:", error.code, error.message);
-
         if (error.code === "auth/email-already-in-use") {
           if (confirm("This email is already registered. Go to login?")) {
             window.location.href = "hr_login.html";
@@ -176,7 +157,6 @@
         } else {
           alert("Error: " + error.message);
         }
-
         submitButton.disabled = false;
       }
     });

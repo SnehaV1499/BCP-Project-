@@ -156,6 +156,18 @@
     };
 
     loadEmployees();
+
+    document.querySelectorAll(".nav-link").forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
+        const sectionId = link.getAttribute("data-section");
+        document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+        const target = document.getElementById(sectionId);
+        if (target) target.classList.add("active");
+      });
+    });
   </script>
 </body>
 </html>

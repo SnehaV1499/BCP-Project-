@@ -5,53 +5,23 @@
   <title>HR Dashboard - JobNest</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif;
-    }
-    body {
-      display: flex; height: 100vh; background-color: #0e1b2c; color: white;
-    }
-    .sidebar {
-      width: 240px; background-color: #1c2b3a; padding: 25px 20px; display: flex; flex-direction: column;
-    }
-    .sidebar h2 {
-      color: #80bfff; text-align: center; margin-bottom: 30px;
-    }
-    .sidebar a {
-      text-decoration: none; color: white; margin: 10px 0; padding: 10px 15px; border-radius: 6px; transition: 0.3s; display: flex; align-items: center;
-    }
-    .sidebar a:hover, .sidebar a.active {
-      background-color: #80bfff; color: #0e1b2c; font-weight: bold;
-    }
-    .main-content {
-      flex: 1; padding: 30px; overflow-y: auto;
-    }
-    .main-content h1 {
-      font-size: 28px; border-bottom: 2px solid #80bfff; padding-bottom: 10px; margin-bottom: 20px;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { display: flex; height: 100vh; background-color: #0e1b2c; color: white; }
+    .sidebar { width: 240px; background-color: #1c2b3a; padding: 25px 20px; display: flex; flex-direction: column; }
+    .sidebar h2 { color: #80bfff; text-align: center; margin-bottom: 30px; }
+    .sidebar a { text-decoration: none; color: white; margin: 10px 0; padding: 10px 15px; border-radius: 6px; transition: 0.3s; display: flex; align-items: center; }
+    .sidebar a:hover, .sidebar a.active { background-color: #80bfff; color: #0e1b2c; font-weight: bold; }
+    .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+    .main-content h1 { font-size: 28px; border-bottom: 2px solid #80bfff; padding-bottom: 10px; margin-bottom: 20px; }
     .section { display: none; }
     .section.active { display: block; }
-    .card {
-      background-color: #1d3349; padding: 20px; border-radius: 10px; margin-bottom: 20px;
-    }
-    table {
-      width: 100%; border-collapse: collapse; margin-top: 15px;
-    }
-    th, td {
-      border: 1px solid #ccc; padding: 10px; text-align: left;
-    }
-    input, textarea, select, button {
-      width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: none;
-    }
-    input, textarea, select {
-      background-color: #28445c; color: white;
-    }
-    button {
-      background-color: #80bfff; color: #0e1b2c; font-weight: bold; cursor: pointer;
-    }
-    button:hover {
-      background-color: #b6dcff;
-    }
+    .card { background-color: #1d3349; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    input, textarea, select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: none; }
+    input, textarea, select { background-color: #28445c; color: white; }
+    button { background-color: #80bfff; color: #0e1b2c; font-weight: bold; cursor: pointer; }
+    button:hover { background-color: #b6dcff; }
     .logout { margin-top: auto; text-align: center; }
     .logout a { color: #ccc; font-size: 14px; text-decoration: none; }
     .logout a:hover { text-decoration: underline; }
@@ -113,16 +83,26 @@
 
     <div id="employee" class="section"><h1>Employee Management</h1><div class="card"><p>Manage employees here.</p></div></div>
     <div id="leave" class="section"><h1>Leave Management</h1><div class="card"><p>View and approve leave requests.</p></div></div>
-    <div id="posting" class="section"><h1>Job Posting</h1><div class="card"><form><input type="text" placeholder="Job Title" /><textarea placeholder="Job Description"></textarea><button>Post Job</button></form></div></div>
+    <div id="posting" class="section">
+      <h1>Job Posting</h1>
+      <div class="card">
+        <form id="jobPostForm">
+          <input type="text" id="jobTitle" placeholder="Job Title" required />
+          <textarea id="jobDescription" placeholder="Job Description" required></textarea>
+          <button type="submit">Post Job</button>
+        </form>
+        <div id="postStatus"></div>
+      </div>
+    </div>
     <div id="interview" class="section"><h1>Interview Tracker</h1><div class="card"><p>Track interview progress here.</p></div></div>
     <div id="resumes" class="section"><h1>Resume Review</h1><div class="card"><p>View and shortlist candidate resumes.</p></div></div>
-    <div id="stats" class="section"><h1>Dashboard Metrics</h1><div class="card"><p>Display charts and analytics here.</p></div></div>
+    <div id="stats" class="section"><h1>Dashboard Metrics</h1><div class="card"><p>Total Jobs Posted: <span id="jobCount">Loading...</span></p></div></div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
@@ -153,7 +133,6 @@
           document.getElementById("profile-company").textContent = hrData.company || "";
           document.getElementById("profile-experience").textContent = hrData.experience || "";
           document.getElementById("profile-bio").textContent = hrData.bio || "";
-
           document.getElementById("hr-name").textContent = hrData.fullname || "HR";
           document.getElementById("hr-email").textContent = hrData.email;
           document.getElementById("hr-empid").textContent = hrData.empid || "N/A";
@@ -164,8 +143,6 @@
           document.getElementById("edit-company").value = hrData.company || "";
           document.getElementById("edit-experience").value = hrData.experience || "";
           document.getElementById("edit-bio").value = hrData.bio || "";
-        } else {
-          alert("No HR data found!");
         }
       } else {
         window.location.href = "hr_login.html";
@@ -195,6 +172,30 @@
         alert("Error updating profile: " + err.message);
       }
     });
+
+    document.getElementById("jobPostForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const jobTitle = document.getElementById("jobTitle").value;
+      const jobDescription = document.getElementById("jobDescription").value;
+      try {
+        await addDoc(collection(db, "job_posts"), {
+          title: jobTitle,
+          description: jobDescription,
+          postedBy: currentHRId,
+          postedAt: new Date()
+        });
+        document.getElementById("postStatus").innerText = "✅ Job posted successfully!";
+        document.getElementById("jobPostForm").reset();
+      } catch (error) {
+        document.getElementById("postStatus").innerText = "❌ Error: " + error.message;
+      }
+    });
+
+    async function loadJobMetrics() {
+      const querySnapshot = await getDocs(collection(db, "job_posts"));
+      document.getElementById("jobCount").innerText = querySnapshot.size;
+    }
+    loadJobMetrics();
 
     document.querySelectorAll(".nav-link").forEach(link => {
       link.addEventListener("click", e => {

@@ -1,4 +1,4 @@
-<!-- Student Dashboard Full Implementation (Updated & Fixed) -->
+<!-- Student Dashboard Full Implementation (Final Complete Code with Firebase Integration) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +8,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
     body { display: flex; height: 100vh; background-color: #1b103c; color: white; }
-    .sidebar { width: 230px; background-color: #221347; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.2); border-right: 2px solid #4a3a7a; }
+    .sidebar { width: 230px; background-color: #221347; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; border-right: 2px solid #4a3a7a; }
     .sidebar img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #a383ff; }
     .sidebar h2 { color: #a383ff; font-size: 20px; margin: 10px 0 5px; }
     .sidebar p { font-size: 13px; text-align: center; margin-bottom: 20px; color: #ccc; }
@@ -36,12 +36,12 @@
 </head>
 <body>
   <div class="sidebar">
-    <img id="sidebarProfilePic" src="https://via.placeholder.com/80" alt="Sidebar Profile Picture">
-    <h2 id="sidebarName">JobNest</h2>
-    <p id="sidebarDesc">Welcome, Student</p>
+    <img id="sidebarPic" src="" alt="Profile Pic">
+    <h2 id="sidebarName">Student</h2>
+    <p id="sidebarEmail">student@example.com</p>
     <a href="#" class="nav-link active" data-section="profile">👤 Profile</a>
     <a href="#" class="nav-link" data-section="jobs">💼 Jobs</a>
-    <a href="#" class="nav-link" data-section="applied">📄 Applied Jobs</a>
+    <a href="#" class="nav-link" data-section="applied">📄 Applied</a>
     <a href="#" class="nav-link" data-section="tracking">📊 Tracking</a>
     <div class="logout">
       <a href="index.html">← Logout</a>
@@ -49,50 +49,45 @@
   </div>
 
   <div class="main-content">
+    <!-- Profile -->
     <div id="profile" class="section active">
-      <h1>Your Profile</h1>
+      <h1>Profile</h1>
       <div class="profile-header">
-        <img id="profilePicDisplay" src="https://via.placeholder.com/100" alt="Profile Picture">
+        <img id="profilePic" src="" alt="Student Photo">
         <div>
-          <h2 id="profileName">Student Name</h2>
-          <p id="profileDesc">Aspiring candidate passionate about technology and innovation.</p>
+          <input type="file" id="picUpload">
         </div>
       </div>
-      <form id="profileForm">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" required>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" required>
-
-        <label for="mobile">Mobile Number</label>
-        <input type="text" id="mobile">
-
-        <label for="skills">Skills</label>
+      <form id="updateForm">
+        <label>Name</label>
+        <input id="name" type="text">
+        <label>Email</label>
+        <input id="email" type="email">
+        <label>Student ID</label>
+        <input id="studentId" type="text" disabled>
+        <label>Skills</label>
         <textarea id="skills"></textarea>
-
-        <label for="resume">Upload Resume (PDF)</label>
-        <input type="file" id="resume" accept="application/pdf">
-
-        <label for="profilePic">Upload Profile Picture</label>
-        <input type="file" id="profilePic" accept="image/*">
-
-        <button id="updateProfileBtn" type="submit">Update Profile</button>
+        <label>Resume</label>
+        <input type="file" id="resumeUpload">
+        <button type="submit">Update</button>
       </form>
     </div>
 
+    <!-- Jobs -->
     <div id="jobs" class="section">
       <h1>Available Jobs</h1>
-      <div id="availableJobsList">Loading jobs...</div>
+      <div id="jobList"></div>
     </div>
 
+    <!-- Applied -->
     <div id="applied" class="section">
       <h1>Applied Jobs</h1>
-      <div id="appliedJobsList"></div>
+      <div id="appliedJobs"></div>
     </div>
 
+    <!-- Tracking -->
     <div id="tracking" class="section">
-      <h1>Application Tracking</h1>
+      <h1>Tracking</h1>
       <div class="tracking-category">
         <h3>Selected</h3>
         <div id="selectedList"></div>
@@ -108,134 +103,144 @@
     </div>
   </div>
 
-  <script>
-    const links = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.section');
-    links.forEach(link => {
-      link.addEventListener('click', () => {
-        links.forEach(l => l.classList.remove('active'));
-        sections.forEach(s => s.classList.remove('active'));
-        link.classList.add('active');
-        document.getElementById(link.dataset.section).classList.add('active');
-      });
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
+    authDomain: "jobnest-bcp.firebaseapp.com",
+    projectId: "jobnest-bcp",
+    storageBucket: "jobnest-bcp.appspot.com",
+    messagingSenderId: "574277449182",
+    appId: "1:574277449182:web:7dd3a3f193f1816119994f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth();
+  const storage = getStorage();
+
+  const links = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('.section');
+
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      links.forEach(l => l.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      link.classList.add('active');
+      document.getElementById(link.dataset.section).classList.add('active');
     });
-  </script>
+  });
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+  let currentUID = localStorage.getItem('loggedInStudent');
 
-    const firebaseConfig = { /* your config */ };
+  if (!currentUID) window.location.href = 'student_login.html';
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-
-    const studentId = localStorage.getItem('loggedInStudent');
-    const profileRef = doc(db, "students", studentId);
-
-    async function loadProfile() {
-      const profileSnap = await getDoc(profileRef);
-      if (profileSnap.exists()) {
-        const data = profileSnap.data();
-        document.getElementById("name").value = data.name || "";
-        document.getElementById("email").value = data.email || "";
-        document.getElementById("mobile").value = data.mobile || "";
-        document.getElementById("skills").value = data.skills || "";
-        document.getElementById("profileName").textContent = data.name || "Student Name";
-        document.getElementById("sidebarName").textContent = data.name || "Student";
-        if (data.profilePicURL) {
-          document.getElementById("profilePicDisplay").src = data.profilePicURL;
-          document.getElementById("sidebarProfilePic").src = data.profilePicURL;
-        }
+  const loadProfile = async () => {
+    const docSnap = await getDoc(doc(db, 'students', currentUID));
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      document.getElementById('name').value = data.name;
+      document.getElementById('email').value = data.email;
+      document.getElementById('studentId').value = data.studentId;
+      document.getElementById('skills').value = data.skills || '';
+      document.getElementById('sidebarName').textContent = data.name;
+      document.getElementById('sidebarEmail').textContent = data.email;
+      if (data.photoURL) {
+        document.getElementById('sidebarPic').src = data.photoURL;
+        document.getElementById('profilePic').src = data.photoURL;
       }
     }
+  };
 
-    document.getElementById("profileForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const mobile = document.getElementById("mobile").value;
-      const skills = document.getElementById("skills").value;
-      const resumeFile = document.getElementById("resume").files[0];
-      const profileFile = document.getElementById("profilePic").files[0];
-      const updates = { name, email, mobile, skills };
+  document.getElementById('updateForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const skills = document.getElementById('skills').value;
+    const pic = document.getElementById('picUpload').files[0];
+    const resume = document.getElementById('resumeUpload').files[0];
+    const updates = { name, email, skills };
 
-      if (resumeFile) {
-        const resumeRef = ref(storage, `resumes/${studentId}`);
-        await uploadBytes(resumeRef, resumeFile);
-        updates.resumeURL = await getDownloadURL(resumeRef);
-      }
-
-      if (profileFile) {
-        const profileRefImg = ref(storage, `profilePics/${studentId}`);
-        await uploadBytes(profileRefImg, profileFile);
-        updates.profilePicURL = await getDownloadURL(profileRefImg);
-      }
-
-      await setDoc(profileRef, updates, { merge: true });
-      alert("Profile updated successfully!");
-      loadProfile();
-    });
-
-    async function loadJobs() {
-      const jobsList = document.getElementById("availableJobsList");
-      jobsList.innerHTML = "";
-      const jobSnapshot = await getDocs(collection(db, "jobs"));
-      jobSnapshot.forEach(docSnap => {
-        const job = docSnap.data();
-        const jobHTML = `<div class="job-card">
-          <h3>${job.title}</h3>
-          <p><strong>Company:</strong> ${job.company}</p>
-          <p><strong>Posted By:</strong> ${job.hrName}</p>
-          <p>${job.description}</p>
-          <button onclick="applyToJob('${docSnap.id}', '${job.title}', '${job.company}')">Apply</button>
-        </div>`;
-        jobsList.innerHTML += jobHTML;
-      });
+    if (pic) {
+      const picRef = ref(storage, `profilePics/${currentUID}`);
+      await uploadBytes(picRef, pic);
+      const picURL = await getDownloadURL(picRef);
+      updates.photoURL = picURL;
     }
-
-    window.applyToJob = async function(jobId, title, company) {
-      const appRef = collection(db, "applications");
-      await addDoc(appRef, { studentId, jobId, jobTitle: title, company, status: "Waiting" });
-      alert("Applied successfully!");
-      loadApplications();
+    if (resume) {
+      const resumeRef = ref(storage, `resumes/${currentUID}`);
+      await uploadBytes(resumeRef, resume);
+      const resumeURL = await getDownloadURL(resumeRef);
+      updates.resumeURL = resumeURL;
     }
-
-    async function loadApplications() {
-      const appliedJobsList = document.getElementById("appliedJobsList");
-      const selectedList = document.getElementById("selectedList");
-      const waitingList = document.getElementById("waitingList");
-      const rejectedList = document.getElementById("rejectedList");
-      appliedJobsList.innerHTML = "";
-      selectedList.innerHTML = "";
-      waitingList.innerHTML = "";
-      rejectedList.innerHTML = "";
-
-      const q = query(collection(db, "applications"), where("studentId", "==", studentId));
-      const querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const jobHTML = `<div class="job-card">
-          <h3>${data.jobTitle} - ${data.company}</h3>
-          <p><strong>Status:</strong> ${data.status}</p>
-        </div>`;
-        appliedJobsList.innerHTML += jobHTML;
-        if (data.status === "Selected") selectedList.innerHTML += jobHTML;
-        else if (data.status === "Waiting") waitingList.innerHTML += jobHTML;
-        else if (data.status === "Rejected") rejectedList.innerHTML += `<div class="job-card">
-          <h3>${data.jobTitle} - ${data.company}</h3>
-          <p><strong>Status:</strong> Rejected</p>
-          <p><strong>Reason:</strong> ${data.reason || "Not specified"}</p>
-        </div>`;
-      });
-    }
-
+    await updateDoc(doc(db, 'students', currentUID), updates);
+    alert("Profile updated!");
     loadProfile();
-    loadJobs();
-    loadApplications();
-  </script>
+  });
+
+  const loadJobs = async () => {
+    const jobContainer = document.getElementById('jobList');
+    jobContainer.innerHTML = '';
+    const jobs = await getDocs(collection(db, 'jobs'));
+    jobs.forEach(docu => {
+      const data = docu.data();
+      const card = document.createElement('div');
+      card.className = 'job-card';
+      card.innerHTML = `<h3>${data.title}</h3><p><strong>Company:</strong> ${data.company}</p><p>${data.description}</p><button onclick="applyJob('${docu.id}')">Apply</button>`;
+      jobContainer.appendChild(card);
+    });
+  };
+
+  window.applyJob = async (jobId) => {
+    await addDoc(collection(db, 'applications'), {
+      studentId: currentUID,
+      jobId: jobId,
+      status: 'Waiting'
+    });
+    alert('Applied Successfully!');
+  };
+
+  const loadApplied = async () => {
+    const container = document.getElementById('appliedJobs');
+    container.innerHTML = '';
+    const apps = await getDocs(collection(db, 'applications'));
+    apps.forEach(app => {
+      if (app.data().studentId === currentUID) {
+        const card = document.createElement('div');
+        card.className = 'job-card';
+        card.innerHTML = `<h3>Job ID: ${app.data().jobId}</h3><p>Status: ${app.data().status}</p>`;
+        container.appendChild(card);
+      }
+    });
+  };
+
+  const loadTracking = async () => {
+    const apps = await getDocs(collection(db, 'applications'));
+    const selected = document.getElementById('selectedList');
+    const waiting = document.getElementById('waitingList');
+    const rejected = document.getElementById('rejectedList');
+    selected.innerHTML = waiting.innerHTML = rejected.innerHTML = '';
+    apps.forEach(app => {
+      if (app.data().studentId === currentUID) {
+        const status = app.data().status;
+        const el = document.createElement('div');
+        el.className = 'job-card';
+        el.textContent = `Job ID: ${app.data().jobId}`;
+        if (status === 'Selected') selected.appendChild(el);
+        else if (status === 'Waiting') waiting.appendChild(el);
+        else if (status === 'Rejected') rejected.appendChild(el);
+      }
+    });
+  };
+
+  loadProfile();
+  loadJobs();
+  loadApplied();
+  loadTracking();
+</script>
 </body>
 </html>

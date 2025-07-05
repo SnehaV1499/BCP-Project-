@@ -146,7 +146,8 @@
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         alert("Login successful!");
-        window.location.href = "hr_dashboard.html"; // 👉 update if needed
+        window.location.href = "./hr_dashboard.html";
+ 
       })
       .catch((error) => {
         alert("Login failed: " + error.message);

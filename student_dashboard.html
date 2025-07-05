@@ -8,11 +8,11 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
     body { display: flex; height: 100vh; background-color: #1b103c; color: white; }
-    .sidebar { width: 230px; background-color: #2a1e5c; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; }
-    .sidebar h2 { color: #a383ff; text-align: center; margin-bottom: 20px; }
+    .sidebar { width: 230px; background-color: #221347; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.2); border-right: 2px solid #4a3a7a; }
     .sidebar img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #a383ff; }
-    .sidebar p { font-size: 14px; text-align: center; margin-bottom: 20px; color: #ccc; }
-    .sidebar a { text-decoration: none; color: white; margin: 10px 0; padding: 10px 15px; border-radius: 6px; transition: background-color 0.2s; display: flex; align-items: center; width: 100%; justify-content: center; }
+    .sidebar h2 { color: #a383ff; font-size: 20px; margin: 10px 0 5px; }
+    .sidebar p { font-size: 13px; text-align: center; margin-bottom: 20px; color: #ccc; }
+    .sidebar a { text-decoration: none; color: white; margin: 6px 0; padding: 10px 12px; border-radius: 6px; transition: 0.2s; width: 100%; text-align: center; }
     .sidebar a:hover, .sidebar a.active { background-color: #a383ff; color: #1b103c; font-weight: bold; }
     .main-content { flex: 1; padding: 30px; overflow-y: auto; }
     .main-content h1 { margin-bottom: 20px; font-size: 28px; border-bottom: 2px solid #a383ff; padding-bottom: 10px; }
@@ -30,6 +30,8 @@
     .job-card p { margin: 5px 0; }
     .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
     .profile-header img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #a383ff; }
+    .tracking-category { margin-top: 20px; }
+    .tracking-category h3 { border-bottom: 1px solid #a383ff; padding-bottom: 5px; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -38,10 +40,9 @@
     <h2 id="sidebarName">JobNest</h2>
     <p id="sidebarDesc">Welcome, Student</p>
     <a href="#" class="nav-link active" data-section="profile">👤 Profile</a>
-    <a href="#" class="nav-link" data-section="home">🏠 Home</a>
-    <a href="#" class="nav-link" data-section="applied">📄 Applied Jobs</a>
     <a href="#" class="nav-link" data-section="jobs">💼 Jobs</a>
-    <a href="#" class="nav-link" data-section="tracking">🚚 Job Tracking</a>
+    <a href="#" class="nav-link" data-section="applied">📄 Applied Jobs</a>
+    <a href="#" class="nav-link" data-section="tracking">📊 Tracking</a>
     <div class="logout">
       <a href="index.html">← Logout</a>
     </div>
@@ -80,9 +81,9 @@
       </form>
     </div>
 
-    <div id="home" class="section">
-      <h1>Job Feed</h1>
-      <div id="homeFeed"></div>
+    <div id="jobs" class="section">
+      <h1>Available Jobs</h1>
+      <div id="availableJobsList"></div>
     </div>
 
     <div id="applied" class="section">
@@ -90,14 +91,20 @@
       <div id="appliedJobsList"></div>
     </div>
 
-    <div id="jobs" class="section">
-      <h1>Available Jobs</h1>
-      <div id="availableJobsList"></div>
-    </div>
-
     <div id="tracking" class="section">
       <h1>Application Tracking</h1>
-      <div id="jobTrackingList"></div>
+      <div class="tracking-category">
+        <h3>Selected</h3>
+        <div id="selectedList"></div>
+      </div>
+      <div class="tracking-category">
+        <h3>Waiting</h3>
+        <div id="waitingList"></div>
+      </div>
+      <div class="tracking-category">
+        <h3>Rejected</h3>
+        <div id="rejectedList"></div>
+      </div>
     </div>
   </div>
 
@@ -116,7 +123,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
     const firebaseConfig = {
@@ -181,7 +188,64 @@
       loadProfile();
     });
 
+    async function loadJobs() {
+      const jobsList = document.getElementById("availableJobsList");
+      jobsList.innerHTML = "";
+      const jobSnapshot = await getDocs(collection(db, "jobs"));
+      jobSnapshot.forEach(docSnap => {
+        const job = docSnap.data();
+        const jobHTML = `<div class="job-card">
+          <h3>${job.title}</h3>
+          <p><strong>Company:</strong> ${job.company}</p>
+          <p><strong>Posted By:</strong> ${job.hrName}</p>
+          <p>${job.description}</p>
+          <button onclick="applyToJob('${docSnap.id}', '${job.title}', '${job.company}')">Apply</button>
+        </div>`;
+        jobsList.innerHTML += jobHTML;
+      });
+    }
+
+    window.applyToJob = async function(jobId, title, company) {
+      const appRef = collection(db, "applications");
+      await addDoc(appRef, { studentId, jobId, jobTitle: title, company, status: "Waiting" });
+      alert("Applied successfully!");
+      loadApplications();
+    }
+
+    async function loadApplications() {
+      const appliedJobsList = document.getElementById("appliedJobsList");
+      const selectedList = document.getElementById("selectedList");
+      const waitingList = document.getElementById("waitingList");
+      const rejectedList = document.getElementById("rejectedList");
+
+      appliedJobsList.innerHTML = "";
+      selectedList.innerHTML = "";
+      waitingList.innerHTML = "";
+      rejectedList.innerHTML = "";
+
+      const q = query(collection(db, "applications"), where("studentId", "==", studentId));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const jobHTML = `<div class="job-card">
+          <h3>${data.jobTitle} - ${data.company}</h3>
+          <p><strong>Status:</strong> ${data.status}</p>
+        </div>`;
+        appliedJobsList.innerHTML += jobHTML;
+        if (data.status === "Selected") selectedList.innerHTML += jobHTML;
+        else if (data.status === "Waiting") waitingList.innerHTML += jobHTML;
+        else if (data.status === "Rejected") rejectedList.innerHTML += `<div class="job-card">
+          <h3>${data.jobTitle} - ${data.company}</h3>
+          <p><strong>Status:</strong> Rejected</p>
+          <p><strong>Reason:</strong> ${data.reason || "Not specified"}</p>
+        </div>`;
+      });
+    }
+
     loadProfile();
+    loadJobs();
+    loadApplications();
   </script>
 </body>
 </html>

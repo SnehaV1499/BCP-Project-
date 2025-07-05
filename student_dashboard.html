@@ -70,6 +70,9 @@
         <label for="skills">Skills</label>
         <textarea id="skills"></textarea>
 
+        <label for="resume">Upload Resume</label>
+        <input type="file" id="resume" accept="application/pdf">
+
         <label for="profilePic">Upload Profile Picture</label>
         <input type="file" id="profilePic" accept="image/*">
 
@@ -194,8 +197,10 @@
             e.preventDefault();
             const mobile = document.getElementById("mobile").value;
             const skills = document.getElementById("skills").value;
+            const resumeFile = document.getElementById("resume").files[0];
             const profilePic = document.getElementById("profilePic").files[0];
             let profilePicUrl = data.profilePicUrl || "";
+            let resumeUrl = data.resumeUrl || "";
 
             if (profilePic) {
               const picRef = ref(storage, `profilePics/${uid}`);
@@ -204,7 +209,13 @@
               document.getElementById("profilePicDisplay").src = profilePicUrl;
             }
 
-            await updateDoc(docRef, { mobile, skills, profilePicUrl });
+            if (resumeFile) {
+              const resumeRef = ref(storage, `resumes/${uid}`);
+              await uploadBytes(resumeRef, resumeFile);
+              resumeUrl = await getDownloadURL(resumeRef);
+            }
+
+            await updateDoc(docRef, { mobile, skills, profilePicUrl, resumeUrl });
             updateSidebar(data.name, skills, profilePicUrl);
             alert("Profile updated successfully!");
           });

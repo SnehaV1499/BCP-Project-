@@ -66,42 +66,6 @@
     }
   </style>
 </head>
-  <script>
-  function studentLogin(event) {
-    event.preventDefault();
-
-    const studentId = document.querySelector('input[name="studentid"]').value;
-    const password = document.querySelector('input[name="password"]').value;
-
-    if (studentId && password) {
-      localStorage.setItem('loggedInStudent', studentId);
-      window.location.href = 'student_dashboard.html';
-    } else {
-      alert("Please enter both Student ID and Password.");
-    }
-  }
-</script>
-  // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
-  authDomain: "jobnest-bcp.firebaseapp.com",
-  projectId: "jobnest-bcp",
-  storageBucket: "jobnest-bcp.firebasestorage.app",
-  messagingSenderId: "574277449182",
-  appId: "1:574277449182:web:7dd3a3f193f1816119994f",
-  measurementId: "G-PHT950JW9D"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 <body>
   <div class="login-box">
@@ -119,5 +83,38 @@ const analytics = getAnalytics(app);
       <a href="index.html">← Back to Home</a>
     </div>
   </div>
+
+  <script>
+    function studentLogin(event) {
+      event.preventDefault();
+      const studentId = document.querySelector('input[name="studentid"]').value;
+      const password = document.querySelector('input[name="password"]').value;
+
+      if (studentId && password) {
+        localStorage.setItem('loggedInStudent', studentId);
+        window.location.href = 'student_dashboard.html';
+      } else {
+        alert("Please enter both Student ID and Password.");
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
+      authDomain: "jobnest-bcp.firebaseapp.com",
+      projectId: "jobnest-bcp",
+      storageBucket: "jobnest-bcp.appspot.com",
+      messagingSenderId: "574277449182",
+      appId: "1:574277449182:web:7dd3a3f193f1816119994f",
+      measurementId: "G-PHT950JW9D"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 </body>
 </html>

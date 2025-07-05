@@ -12,8 +12,6 @@
     .sidebar h2 { color: #a383ff; text-align: center; margin-bottom: 30px; }
     .sidebar a { text-decoration: none; color: white; margin: 10px 0; padding: 10px 15px; border-radius: 6px; transition: background-color 0.2s; display: flex; align-items: center; }
     .sidebar a:hover, .sidebar a.active { background-color: #a383ff; color: #1b103c; font-weight: bold; }
-    <a href="#" onclick="logout()">🚪 Logout</a>
-
     .main-content { flex: 1; padding: 30px; overflow-y: auto; }
     .main-content h1 { margin-bottom: 20px; font-size: 28px; border-bottom: 2px solid #a383ff; padding-bottom: 10px; }
     .section { display: none; }
@@ -21,29 +19,16 @@
     .logout { margin-top: auto; text-align: center; }
     .logout a { color: #ccc; font-size: 14px; text-decoration: none; }
     .logout a:hover { text-decoration: underline; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    table, th, td { border: 1px solid #ccc; }
-    th, td { padding: 12px; text-align: left; }
     input, select, textarea, button { padding: 10px; margin: 8px 0; width: 100%; border-radius: 6px; border: none; }
     input, select, textarea { background-color: #4a3a7a; color: white; }
     button { background-color: #a383ff; color: #1b103c; font-weight: bold; cursor: pointer; }
     button:hover { background-color: #c1aaff; }
-    .profile-pic { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px; display: block; }
     .job-card { background-color: #2a1e5c; padding: 20px; margin-bottom: 15px; border-radius: 10px; }
-    .job-card img { width: 60px; height: 60px; float: left; margin-right: 15px; border-radius: 10px; }
     .job-card h3 { margin: 0; }
     .job-card p { margin: 5px 0; }
   </style>
 </head>
 <body>
-  <script>
-  const student = localStorage.getItem('loggedInStudent');
-  if (!student) {
-    alert("Please login first.");
-    window.location.href = 'student_login.html';
-  }
-</script>
-
   <div class="sidebar">
     <h2>JobNest</h2>
     <a href="#" class="nav-link active" data-section="profile">👤 Profile</a>
@@ -59,22 +44,18 @@
   <div class="main-content">
     <div id="profile" class="section active">
       <h1>Your Profile</h1>
-      <label for="profile-pic">Profile Picture</label>
-<input type="file" id="profile-pic" accept="image/*">
-<br>
-$1
       <form>
         <label for="name">Full Name</label>
-        <input type="text" id="name" value="John Doe">
+        <input type="text" id="name">
 
         <label for="email">Email</label>
-        <input type="email" id="email" value="john.doe@example.com">
+        <input type="email" id="email">
 
         <label for="mobile">Mobile Number</label>
-        <input type="text" id="mobile" value="9876543210">
+        <input type="text" id="mobile">
 
         <label for="skills">Skills</label>
-        <textarea id="skills">Java, Python, HTML</textarea>
+        <textarea id="skills"></textarea>
 
         <label for="resume">Upload Resume</label>
         <input type="file" id="resume">
@@ -85,69 +66,97 @@ $1
 
     <div id="home" class="section">
       <h1>Job Feed</h1>
-      <div class="job-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
-        <h3>Software Engineer - ABC Corp</h3>
-        <p><strong>HR:</strong> Priya Mehra</p>
-        <p><strong>Location:</strong> Bangalore</p>
-        <p>Join our growing dev team working on cloud-based platforms. Skills: Java, Spring Boot, REST APIs.</p>
-      </div>
-      <div class="job-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
-        <h3>UI/UX Designer - CreativeSoft</h3>
-        <p><strong>HR:</strong> Arjun R</p>
-        <p><strong>Location:</strong> Chennai</p>
-        <p>Design intuitive user interfaces and craft user experiences for mobile and web apps.</p>
-      </div>
     </div>
 
     <div id="applied" class="section">
       <h1>Applied Jobs</h1>
-      <div class="job-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
-        <h3>Frontend Developer - XYZ Ltd</h3>
-        <p>ReactJS-based frontend development with dynamic components and API integration.</p>
-        <p><strong>Status:</strong> Under Review</p>
-      </div>
     </div>
 
     <div id="jobs" class="section">
       <h1>Available Jobs</h1>
-      <div class="job-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
-        <h3>DevOps Engineer - TechSphere</h3>
-        <p>Work with Docker, Jenkins, and CI/CD pipelines. Location: Pune</p>
-        <button>Apply</button>
-      </div>
-      <div class="job-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
-        <h3>Backend Developer - NetLink</h3>
-        <p>Build scalable APIs using Node.js and MongoDB. Location: Hyderabad</p>
-        <button>Apply</button>
-      </div>
     </div>
 
     <div id="tracking" class="section">
       <h1>Application Tracking</h1>
-      <div class="job-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
-        <h3>Java Developer - InfoSoft</h3>
-        <p>Backend application in Spring Boot. <strong>Status:</strong> Shortlisted</p>
-      </div>
-      <div class="job-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Company">
-        <h3>UI Designer - UIStudios</h3>
-        <p>Figma-based design workflow. <strong>Status:</strong> Pending</p>
-      </div>
     </div>
   </div>
-  <p>Welcome, <span id="studentName"></span>!</p>
 
-<script>
-  const student = localStorage.getItem('loggedInStudent');
-  document.getElementById('studentName').textContent = student || 'Student';
-</script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
+      authDomain: "jobnest-bcp.firebaseapp.com",
+      projectId: "jobnest-bcp",
+      storageBucket: "jobnest-bcp.appspot.com",
+      messagingSenderId: "574277449182",
+      appId: "1:574277449182:web:7dd3a3f193f1816119994f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loadJobs = async () => {
+      const jobsDiv = document.getElementById("jobs");
+      const q = await getDocs(collection(db, "jobPosts"));
+      q.forEach(docSnap => {
+        const job = docSnap.data();
+        const div = document.createElement("div");
+        div.className = "job-card";
+        div.innerHTML = `<h3>${job.title}</h3><p>${job.description}</p><p><strong>Posted by:</strong> ${job.postedBy}</p>`;
+        jobsDiv.appendChild(div);
+      });
+    };
+
+    const loadApplications = async (uid) => {
+      const appliedDiv = document.getElementById("applied");
+      const trackingDiv = document.getElementById("tracking");
+      const q = query(collection(db, "applications"), where("studentId", "==", uid));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (docSnap) => {
+        const app = docSnap.data();
+        const jobDoc = await getDoc(doc(db, "jobPosts", app.jobId));
+        if (jobDoc.exists()) {
+          const job = jobDoc.data();
+          const appliedCard = document.createElement("div");
+          appliedCard.className = "job-card";
+          appliedCard.innerHTML = `<h3>${job.title}</h3><p>${job.description}</p><p><strong>Status:</strong> ${app.status}</p>`;
+          appliedDiv.appendChild(appliedCard);
+
+          const trackingCard = document.createElement("div");
+          trackingCard.className = "job-card";
+          trackingCard.innerHTML = `<h3>${job.title}</h3><p><strong>Tracking Status:</strong> ${app.status}</p>`;
+          trackingDiv.appendChild(trackingCard);
+        }
+      });
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const uid = user.uid;
+        const docRef = doc(db, "students", uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById("name").value = data.name || "";
+          document.getElementById("email").value = data.email || "";
+          document.getElementById("mobile").value = data.mobile || "";
+          document.getElementById("skills").value = data.skills || "";
+
+          await loadJobs();
+          await loadApplications(uid);
+        } else {
+          alert("Student data not found.");
+        }
+      } else {
+        window.location.href = 'student_login.html';
+      }
+    });
+  </script>
 
   <script>
     const links = document.querySelectorAll('.nav-link');
@@ -162,11 +171,6 @@ $1
       });
     });
   </script>
- <script type="module">
-  import { app, analytics } from './firebase.js';
-  console.log("Firebase initialized in this page");
-</script>
-
 
 </body>
 </html>

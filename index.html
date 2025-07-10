@@ -1,4 +1,3 @@
-<!-- ✅ index.html (Final Version) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +6,6 @@
   <title>JobNest | Smart Hiring Platform</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
   <style>
-    /* styles unchanged - clean and perfect */
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
@@ -42,32 +40,31 @@
     }
     .dropdown {
       position: relative;
+      display: inline-block;
     }
     .dropdown-content {
       display: none;
       position: absolute;
       background-color: #ffffff;
-      top: 30px;
-      right: 0;
-      min-width: 180px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      z-index: 10;
-      border-radius: 8px;
-      overflow: hidden;
+      color: #1e112d;
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      z-index: 999;
+      border-radius: 6px;
     }
     .dropdown-content a {
       color: #1e112d;
       padding: 12px 16px;
-      display: block;
       text-decoration: none;
-      font-weight: 500;
+      display: block;
     }
     .dropdown-content a:hover {
-      background-color: #f0f0f0;
+      background-color: #ddd;
     }
     .dropdown:hover .dropdown-content {
       display: block;
     }
+
     .image-top {
       text-align: center;
       margin-top: 40px;
@@ -121,134 +118,121 @@
       font-weight: bold;
       color: #c084fc;
     }
-    @media (max-width: 768px) {
-      .main-content h2 {
-        font-size: 30px;
-      }
-      .highlight {
-        font-size: 24px;
-      }
-      .testimonial-card {
-        font-size: 15px;
-      }
-      .image-top img {
-        width: 90%;
-      }
-      #chatbot-bubble {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #6f42c1;
-    color: white;
-    font-size: 26px;
-    padding: 14px 16px;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    z-index: 1000;
-    transition: all 0.3s ease;
-  }
-  #chatbot-bubble:hover {
-    transform: scale(1.1);
-  }
-  #chatbot-box {
-    display: none;
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    width: 340px;
-    background: #1e1e2f;
-    color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.6);
-    overflow: hidden;
-    z-index: 1001;
-    display: flex;
-    flex-direction: column;
-  }
-  #chatbot-header {
-    background: #6f42c1;
-    padding: 12px;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  #chatbot-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .chat-message {
-    max-width: 75%;
-    padding: 10px 14px;
-    border-radius: 18px;
-    font-size: 14px;
-    line-height: 1.4;
-    word-wrap: break-word;
-  }
-  .user-msg {
-    align-self: flex-end;
-    background: #6f42c1;
-    color: #fff;
-    border-bottom-right-radius: 4px;
-  }
-  .bot-msg {
-    align-self: flex-start;
-    background: #2e2e45;
-    color: #ddd;
-    border-bottom-left-radius: 4px;
-  }
-  #chatbot-input {
-    display: flex;
-    border-top: 1px solid #444;
-    background: #28283c;
-  }
-  #chatbot-input input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: transparent;
-    color: #eee;
-    outline: none;
-  }
-  #chatbot-input button {
-    padding: 10px 14px;
-    background: #6f42c1;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  #chatbot-input button:hover {
-    background: #5a33a7;
-  }
-  #quick-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 10px;
-    background: #24243e;
-    border-top: 1px solid #444;
-  }
-  #quick-buttons button {
-    flex: 1;
-    background: #6f42c1;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  #quick-buttons button:hover {
-    background: #5a33a7;
-  }
-}
+
+    #chatbot-bubble {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #6f42c1;
+      color: white;
+      font-size: 26px;
+      padding: 14px 16px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+    #chatbot-bubble:hover {
+      transform: scale(1.1);
+    }
+    #chatbot-box {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 340px;
+      background: #1e1e2f;
+      color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      overflow: hidden;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+    }
+    #chatbot-header {
+      background: #6f42c1;
+      padding: 12px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #chatbot-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-message {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+    .user-msg {
+      align-self: flex-end;
+      background: #6f42c1;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .bot-msg {
+      align-self: flex-start;
+      background: #2e2e45;
+      color: #ddd;
+      border-bottom-left-radius: 4px;
+    }
+    #chatbot-input {
+      display: flex;
+      border-top: 1px solid #444;
+      background: #28283c;
+    }
+    #chatbot-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: #eee;
+      outline: none;
+    }
+    #chatbot-input button {
+      padding: 10px 14px;
+      background: #6f42c1;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #chatbot-input button:hover {
+      background: #5a33a7;
+    }
+    #quick-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px;
+      background: #24243e;
+      border-top: 1px solid #444;
+    }
+    #quick-buttons button {
+      flex: 1;
+      background: #6f42c1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #quick-buttons button:hover {
+      background: #5a33a7;
+    }
   </style>
 </head>
 <body>
@@ -260,14 +244,12 @@
     <a href="whyus.html">Why Us</a>
     <a href="features.html">Features</a>
     <a href="contact.html">Contact</a>
-
-    <!-- Login Dropdown -->
     <div class="dropdown">
       <a href="#">Login ▾</a>
       <div class="dropdown-content">
         <a href="hr_login.html">Login as HR</a>
         <a href="student_login.html">Login as Student</a>
-        <a href="#">Login as Super Admin</a> <!-- You can change to admin_login.html -->
+        <a href="#">Login as Super Admin</a>
       </div>
     </div>
   </nav>
@@ -285,23 +267,21 @@
 
 <div class="testimonials">
   <h3>What Our Clients Say</h3>
-
   <div class="testimonial-card">
     “JobNest has helped us streamline hiring like never before. The AI resume shortlisting is a game-changer!”
     <span>- Neha S., Talent Acquisition Lead</span>
   </div>
-
   <div class="testimonial-card">
     “As a college placement officer, JobNest saved us time and effort. Highly recommended!”
     <span>- Ravi T., Placement Coordinator</span>
   </div>
-
   <div class="testimonial-card">
     “User-friendly, smart, and efficient — it’s the best tool we’ve used for startup hiring.”
     <span>- Shruti K., Founder, BrightStart Tech</span>
   </div>
 </div>
-  <div id="chatbot-bubble" onclick="toggleChatbot()">💬</div>
+
+<div id="chatbot-bubble" onclick="toggleChatbot()">💬</div>
 <div id="chatbot-box">
   <div id="chatbot-header">
     Natasha — JobNest Assistant <span onclick="toggleChatbot()" style="cursor:pointer;">✖</span>
@@ -318,9 +298,9 @@
     <button onclick="sendMessage()">Send</button>
   </div>
 </div>
-<script>
-  let greeted = false; // track if user greeted properly
 
+<script>
+  let greeted = false;
   function toggleChatbot() {
     var box = document.getElementById('chatbot-box');
     var messages = document.getElementById('chatbot-messages');
@@ -329,7 +309,6 @@
     } else {
       box.style.display = 'flex';
       if (messages.childElementCount === 0) {
-        // Start 3-part greeting
         setTimeout(() => sendBotMessage("Hi 👋"), 500);
         setTimeout(() => sendBotMessage("How may I help you today?"), 1200);
         setTimeout(() => sendBotMessage("You can also pick a quick option below."), 2000);
@@ -360,18 +339,16 @@
     messages.scrollTop = messages.scrollHeight;
 
     setTimeout(() => {
-      // if not greeted yet, only accept hello variations
       if (!greeted) {
         if (/^(hi|hello|hey|greetings)\b/i.test(userMsg)) {
           greeted = true;
           sendBotMessage("Wonderful! How can I assist you?");
         } else {
-          sendBotMessage("Please start by saying hello,hey,hi to begin our conversation.");
+          sendBotMessage("Please start by saying hello, hey, hi to begin our conversation.");
         }
         return;
       }
 
-      // after greeted, normal flow
       var reply = getNatashaReply(userMsg.toLowerCase());
       sendBotMessage(reply);
     }, 600);
@@ -386,7 +363,7 @@
       return "You can explore available roles on JobNest and submit applications through your account dashboard.";
     }
     if (msg.includes("pricing") || msg.includes("cost") || msg.includes("subscription")) {
-      return "Our pricing models are designed to be flexible. Please visit our pricing page or contact support.";
+      return "Our pricing models are flexible. Please visit our pricing page or contact support.";
     }
     if (msg.includes("login") || msg.includes("sign in") || msg.includes("account")) {
       return "Access your JobNest account using the Login option at the top right of the homepage.";
@@ -403,5 +380,6 @@
     return "Thank you for your question. I'll forward it to our team for more details if needed.";
   }
 </script>
+
 </body>
 </html>

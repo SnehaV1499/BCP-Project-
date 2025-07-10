@@ -161,12 +161,25 @@
     }
     #chatbot-messages {
       flex: 1;
+      max-height: 300px;
       overflow-y: auto;
       padding: 15px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
+    /* custom scrollbar */
+    #chatbot-messages::-webkit-scrollbar {
+      width: 8px;
+    }
+    #chatbot-messages::-webkit-scrollbar-track {
+      background: #2e2e45;
+    }
+    #chatbot-messages::-webkit-scrollbar-thumb {
+      background-color: #6f42c1;
+      border-radius: 4px;
+    }
+
     .chat-message {
       max-width: 75%;
       padding: 10px 14px;
@@ -315,7 +328,6 @@
       }
     }
   }
-
   function sendBotMessage(text) {
     var messages = document.getElementById('chatbot-messages');
     var botBubble = document.createElement('div');
@@ -324,23 +336,21 @@
     messages.appendChild(botBubble);
     messages.scrollTop = messages.scrollHeight;
   }
-
   function sendMessage(text) {
     var input = document.getElementById('userInput');
     var messages = document.getElementById('chatbot-messages');
     var userMsg = text || input.value.trim();
     if (!userMsg) return;
-
     var userBubble = document.createElement('div');
     userBubble.className = 'chat-message user-msg';
     userBubble.innerText = userMsg;
     messages.appendChild(userBubble);
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
-
     setTimeout(() => {
+      let lowerMsg = userMsg.toLowerCase();
       if (!greeted) {
-        if (/^(hi|hello|hey|greetings)\b/i.test(userMsg)) {
+        if (/^(hi|hello|hey|greetings)\b/.test(lowerMsg)) {
           greeted = true;
           sendBotMessage("Wonderful! How can I assist you?");
         } else {
@@ -348,16 +358,29 @@
         }
         return;
       }
-
-      var reply = getNatashaReply(userMsg.toLowerCase());
+      if (/thank(s| you)/i.test(lowerMsg)) {
+        sendBotMessage("Always here to help 😊");
+        return;
+      }
+      if (!isExpectedQuery(lowerMsg)) {
+        sendBotMessage("Please select an option below or start by saying hello.");
+        return;
+      }
+      var reply = getNatashaReply(lowerMsg);
       sendBotMessage(reply);
     }, 600);
   }
-
   function quickAsk(question) {
     sendMessage(question);
   }
-
+  function isExpectedQuery(msg) {
+    return msg.includes("job") || msg.includes("apply") || msg.includes("position") ||
+           msg.includes("pricing") || msg.includes("cost") || msg.includes("subscription") ||
+           msg.includes("login") || msg.includes("account") || msg.includes("sign in") ||
+           msg.includes("contact") || msg.includes("support") || msg.includes("help") ||
+           msg.includes("features") || msg.includes("services") || msg.includes("platform") ||
+           msg.includes("status") || msg.includes("application status");
+  }
   function getNatashaReply(msg) {
     if (msg.includes("job") || msg.includes("apply") || msg.includes("position")) {
       return "You can explore available roles on JobNest and submit applications through your account dashboard.";

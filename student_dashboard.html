@@ -1,4 +1,3 @@
-<!-- Student Dashboard Full Implementation (Final Complete Code with Firebase Integration) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,7 +48,6 @@
   </div>
 
   <div class="main-content">
-    <!-- Profile -->
     <div id="profile" class="section active">
       <h1>Profile</h1>
       <div class="profile-header">
@@ -73,19 +71,16 @@
       </form>
     </div>
 
-    <!-- Jobs -->
     <div id="jobs" class="section">
       <h1>Available Jobs</h1>
       <div id="jobList"></div>
     </div>
 
-    <!-- Applied -->
     <div id="applied" class="section">
       <h1>Applied Jobs</h1>
       <div id="appliedJobs"></div>
     </div>
 
-    <!-- Tracking -->
     <div id="tracking" class="section">
       <h1>Tracking</h1>
       <div class="tracking-category">
@@ -105,7 +100,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
@@ -123,6 +118,8 @@
   const auth = getAuth();
   const storage = getStorage();
 
+  let currentUID = "";
+
   const links = document.querySelectorAll('.nav-link');
   const sections = document.querySelectorAll('.section');
 
@@ -134,9 +131,6 @@
       document.getElementById(link.dataset.section).classList.add('active');
     });
   });
-
-  const docSnap = await getDoc(doc(db, 'students', currentUID));
-
 
   const loadProfile = async () => {
     const docSnap = await getDoc(doc(db, 'students', currentUID));
@@ -152,11 +146,19 @@
         document.getElementById('sidebarPic').src = data.photoURL;
         document.getElementById('profilePic').src = data.photoURL;
       }
+      if (data.resumeURL) {
+        const existing = document.querySelector('#resumeUpload + p');
+        if (existing) existing.remove();
+        const resumeInfo = document.createElement('p');
+        resumeInfo.innerHTML = `<a href="${data.resumeURL}" target="_blank" style="color:#a383ff">View Uploaded Resume</a>`;
+        document.getElementById("resumeUpload").after(resumeInfo);
+      }
     }
   };
 
   document.getElementById('updateForm').addEventListener('submit', async e => {
     e.preventDefault();
+
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const skills = document.getElementById('skills').value;
@@ -164,29 +166,37 @@
     const resume = document.getElementById('resumeUpload').files[0];
     const updates = { name, email, skills };
 
-    if (pic) {
-  const picRef = ref(storage, `profilePics/${currentUID}`);
-  await uploadBytes(picRef, pic);
-  const picURL = await getDownloadURL(picRef);
-  updates.photoURL = picURL;
-}
+    try {
+      if (pic) {
+        const picRef = ref(storage, `profilePics/${currentUID}`);
+        await uploadBytes(picRef, pic);
+        const picURL = await getDownloadURL(picRef);
+        updates.photoURL = picURL;
+      }
 
-if (resume) {
-  const resumeRef = ref(storage, `resumes/${currentUID}`);
-  await uploadBytes(resumeRef, resume);
-  const resumeURL = await getDownloadURL(resumeRef);
-  updates.resumeURL = resumeURL;
-}
+      if (resume) {
+        const resumeRef = ref(storage, `resumes/${currentUID}`);
+        await uploadBytes(resumeRef, resume);
+        const resumeURL = await getDownloadURL(resumeRef);
+        updates.resumeURL = resumeURL;
+      }
 
-    await updateDoc(doc(db, 'students', currentUID), updates);
-    if (data.resumeURL) {
-  const resumeLabel = document.createElement('p');
-  resumeLabel.innerHTML = `<a href="${data.resumeURL}" target="_blank">View Uploaded Resume</a>`;
-  document.getElementById('resumeUpload').after(resumeLabel);
-}
-
-
+      await updateDoc(doc(db, 'students', currentUID), updates);
+      alert("Profile updated successfully!");
+      await loadProfile();
+    } catch (err) {
+      alert("Error updating profile: " + err.message);
+    }
   });
+
+  window.applyJob = async (jobId) => {
+    await addDoc(collection(db, 'applications'), {
+      studentId: currentUID,
+      jobId: jobId,
+      status: 'Waiting'
+    });
+    alert('Applied Successfully!');
+  };
 
   const loadJobs = async () => {
     const jobContainer = document.getElementById('jobList');
@@ -199,15 +209,6 @@ if (resume) {
       card.innerHTML = `<h3>${data.title}</h3><p><strong>Company:</strong> ${data.company}</p><p>${data.description}</p><button onclick="applyJob('${docu.id}')">Apply</button>`;
       jobContainer.appendChild(card);
     });
-  };
-
-  window.applyJob = async (jobId) => {
-    await addDoc(collection(db, 'applications'), {
-      studentId: currentUID,
-      jobId: jobId,
-      status: 'Waiting'
-    });
-    alert('Applied Successfully!');
   };
 
   const loadApplied = async () => {
@@ -243,10 +244,17 @@ if (resume) {
     });
   };
 
-  loadProfile();
-  loadJobs();
-  loadApplied();
-  loadTracking();
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUID = user.uid;
+      await loadProfile();
+      await loadJobs();
+      await loadApplied();
+      await loadTracking();
+    } else {
+      window.location.href = "student_login.html";
+    }
+  });
 </script>
 </body>
 </html>

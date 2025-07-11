@@ -97,16 +97,15 @@
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-       await setDoc(doc(db, "students",user.uid), {
-        name: name,
-        email: email,
-        studentId: uid,
-        skills: "",
-        photoURL: "",
-        resumeURL: ""
-});
-
-
+        // ✅ Store user data in Firestore using UID
+        await setDoc(doc(db, "students", user.uid), {
+          name: name,
+          email: email,
+          studentId: studentId,
+          skills: "",
+          photoURL: "",
+          resumeURL: ""
+        });
 
         alert("Registration successful!");
         window.location.href = "student_login.html";

@@ -97,13 +97,15 @@
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        await setDoc(doc(db, "students", user.uid), {
-          name,
-          studentId,
-          email,
-          uid: user.uid,
-          registeredAt: new Date().toISOString()
-        });
+        await setDoc(doc(db, "students", uid), {
+  name,
+  email,
+  studentId,
+  skills: "",
+  photoURL: "",
+  resumeURL: ""
+});
+
 
         alert("Registration successful!");
         window.location.href = "student_login.html";

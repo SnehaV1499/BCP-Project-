@@ -135,9 +135,8 @@
     });
   });
 
-  let currentUID = localStorage.getItem('loggedInStudent');
+  const docSnap = await getDoc(doc(db, 'students', currentUID));
 
-  if (!currentUID) window.location.href = 'student_login.html';
 
   const loadProfile = async () => {
     const docSnap = await getDoc(doc(db, 'students', currentUID));
@@ -166,20 +165,21 @@
     const updates = { name, email, skills };
 
     if (pic) {
-      const picRef = ref(storage, `profilePics/${currentUID}`);
-      await uploadBytes(picRef, pic);
-      const picURL = await getDownloadURL(picRef);
-      updates.photoURL = picURL;
-    }
-    if (resume) {
-      const resumeRef = ref(storage, `resumes/${currentUID}`);
-      await uploadBytes(resumeRef, resume);
-      const resumeURL = await getDownloadURL(resumeRef);
-      updates.resumeURL = resumeURL;
-    }
+  const picRef = ref(storage, `profilePics/${currentUID}`);
+  await uploadBytes(picRef, pic);
+  const picURL = await getDownloadURL(picRef);
+  updates.photoURL = picURL;
+}
+
+if (resume) {
+  const resumeRef = ref(storage, `resumes/${currentUID}`);
+  await uploadBytes(resumeRef, resume);
+  const resumeURL = await getDownloadURL(resumeRef);
+  updates.resumeURL = resumeURL;
+}
+
     await updateDoc(doc(db, 'students', currentUID), updates);
-    alert("Profile updated!");
-    loadProfile();
+
   });
 
   const loadJobs = async () => {

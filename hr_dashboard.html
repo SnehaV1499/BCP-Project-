@@ -70,6 +70,9 @@
     <a href="#" class="nav-link" data-section="stats">📊 Dashboard Metrics</a>
     <div class="logout"><a href="index.html">← Logout</a>
     <a href="resume_screening.html">Resume Screening</a>
+      <h2>Uploaded Student Resumes</h2>
+<div id="resumeSection"></div>
+
 </div>
   </div>
   <div class="main-content">
@@ -296,6 +299,51 @@
         document.getElementById(sectionId).classList.add("active");
       });
     });
+    // 👇 Resume Screening Logic: Load and screen uploaded resumes by students
+import { getStorage, ref as storageRef, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+// 🔽 Add container in your HTML (if not already present)
+const resumeContainer = document.createElement('div');
+resumeContainer.id = "resumeSection";
+document.body.appendChild(resumeContainer); // or append where needed in your page layout
+
+const loadStudentResumes = async () => {
+  const studentsSnap = await getDocs(collection(db, "students"));
+  const container = document.getElementById("resumeSection");
+  container.innerHTML = "<h2 style='margin-top:30px;'>Student Resumes</h2>";
+
+  studentsSnap.forEach(docu => {
+    const student = docu.data();
+    if (student.resumeURL) {
+      const div = document.createElement('div');
+      div.style = "background:#2a1e5c;padding:15px;margin:10px 0;border-radius:8px;color:white;";
+      div.innerHTML = `
+        <h4>${student.name}</h4>
+        <p>Email: ${student.email}</p>
+        <p><a href="${student.resumeURL}" target="_blank">📎 View Resume</a></p>
+        ${student.resumeURL.endsWith(".txt") ?
+          `<button onclick="screenResume('${student.resumeURL}')">🔍 Screen Resume</button>` :
+          `<p>⚠️ Screening supports only .txt files</p>`}
+      `;
+      container.appendChild(div);
+    }
+  });
+};
+
+window.screenResume = async (url) => {
+  const response = await fetch(url);
+  const text = await response.text();
+  const keywords = ["java", "python", "html", "css", "firebase"]; // you can edit this list
+  const found = keywords.filter(kw => text.toLowerCase().includes(kw));
+  const result = (found.length >= 2)
+    ? `✅ Resume Selected! Found: ${found.join(', ')}`
+    : `❌ Resume Rejected. Only found: ${found.join(', ') || 'None'}`;
+  alert(result);
+};
+
+// 🔁 Call the function on load
+loadStudentResumes();
+
   </script>
 </body>
 </html>

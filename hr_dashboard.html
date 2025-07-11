@@ -329,20 +329,26 @@ const loadStudentResumes = async () => {
     }
   });
 };
-
 window.screenResume = async (url) => {
   const response = await fetch(url);
   const text = await response.text();
-  const keywords = ["java", "python", "html", "css", "firebase"]; // you can edit this list
+  const keywords = ["java", "python", "html", "css", "firebase"];
   const found = keywords.filter(kw => text.toLowerCase().includes(kw));
   const result = (found.length >= 2)
     ? `✅ Resume Selected! Found: ${found.join(', ')}`
     : `❌ Resume Rejected. Only found: ${found.join(', ') || 'None'}`;
-  alert(result);
+
+  const parentCard = event.target.closest('div');
+  let status = parentCard.querySelector(".screen-status");
+  if (!status) {
+    status = document.createElement("p");
+    status.className = "screen-status";
+    parentCard.appendChild(status);
+  }
+  status.textContent = result;
+  status.style = "margin-top:10px;font-weight:bold;color:" + (found.length >= 2 ? "lightgreen" : "salmon");
 };
 
-// 🔁 Call the function on load
-loadStudentResumes();
 
   </script>
 </body>

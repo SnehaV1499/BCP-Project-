@@ -179,6 +179,12 @@ if (resume) {
 }
 
     await updateDoc(doc(db, 'students', currentUID), updates);
+    if (data.resumeURL) {
+  const resumeLabel = document.createElement('p');
+  resumeLabel.innerHTML = `<a href="${data.resumeURL}" target="_blank">View Uploaded Resume</a>`;
+  document.getElementById('resumeUpload').after(resumeLabel);
+}
+
 
   });
 

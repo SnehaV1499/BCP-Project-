@@ -66,53 +66,5 @@
       <a href="student_login.html">← Back to Login</a>
     </div>
   </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDJJvVVsSCJAhurPO_6AmyIvY4-GwSKHjM",
-      authDomain: "jobnest-bcp.firebaseapp.com",
-      projectId: "jobnest-bcp",
-      storageBucket: "jobnest-bcp.appspot.com",
-      messagingSenderId: "574277449182",
-      appId: "1:574277449182:web:7dd3a3f193f1816119994f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    document.getElementById("registerForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("name").value;
-      const studentId = document.getElementById("studentId").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // ✅ Store user data in Firestore using UID
-        await setDoc(doc(db, "students", user.uid), {
-          name: name,
-          email: email,
-          studentId: studentId,
-          skills: "",
-          photoURL: "",
-          resumeURL: ""
-        });
-
-        alert("Registration successful!");
-        window.location.href = "student_login.html";
-      } catch (error) {
-        alert("Error: " + error.message);
-      }
-    });
-  </script>
 </body>
 </html>

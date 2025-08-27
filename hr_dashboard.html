@@ -1,154 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>HR Dashboard - JobNest</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif;
-    }
-    body {
-      display: flex; height: 100vh; background-color: #0e1b2c; color: white;
-    }
-    .sidebar {
-      width: 240px; background-color: #1c2b3a; padding: 25px 20px; display: flex; flex-direction: column;
-    }
-    .sidebar h2 {
-      color: #80bfff; text-align: center; margin-bottom: 30px;
-    }
-    .sidebar a {
-      text-decoration: none; color: white; margin: 10px 0; padding: 10px 15px; border-radius: 6px; transition: 0.3s; display: flex; align-items: center;
-    }
-    .sidebar a:hover, .sidebar a.active {
-      background-color: #80bfff; color: #0e1b2c; font-weight: bold;
-    }
-    .main-content {
-      flex: 1; padding: 30px; overflow-y: auto;
-    }
-    .main-content h1 {
-      font-size: 28px; border-bottom: 2px solid #80bfff; padding-bottom: 10px; margin-bottom: 20px;
-    }
-    .section { display: none; }
-    .section.active { display: block; }
-    .card {
-      background-color: #1d3349; padding: 20px; border-radius: 10px; margin-bottom: 20px;
-    }
-    table {
-      width: 100%; border-collapse: collapse; margin-top: 15px;
-    }
-    th, td {
-      border: 1px solid #ccc; padding: 10px; text-align: left;
-    }
-    input, textarea, select, button {
-      width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: none;
-    }
-    input, textarea, select {
-      background-color: #28445c; color: white;
-    }
-    button {
-      background-color: #80bfff; color: #0e1b2c; font-weight: bold; cursor: pointer;
-    }
-    button:hover {
-      background-color: #b6dcff;
-    }
-    .logout { margin-top: auto; text-align: center; }
-    .logout a { color: #ccc; font-size: 14px; text-decoration: none; }
-    .logout a:hover { text-decoration: underline; }
-    #profile-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; }
-  </style>
+  <meta charset="UTF-8">
+  <title>HR Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h2>HR Dashboard</h2>
-    <a href="#" class="nav-link active" data-section="profile">👤 My Profile</a>
-    <a href="#" class="nav-link" data-section="employee">👥 Employee Management</a>
-    <a href="#" class="nav-link" data-section="leave">🗓 Leave Management</a>
-    <a href="#" class="nav-link" data-section="posting">📢 Job Posting</a>
-    <a href="#" class="nav-link" data-section="interview">📋 Interview Tracker</a>
-    <a href="#" class="nav-link" data-section="resumes">📑 Resume Review</a>
-    <a href="#" class="nav-link" data-section="stats">📊 Dashboard Metrics</a>
-    <div class="logout"><a href="index.html">← Logout</a>
-    <a href="resume_screening.html">Resume Screening</a>
-      <h2>Uploaded Student Resumes</h2>
-<div id="resumeSection"></div>
-
-</div>
+    <h2>HR Panel</h2>
+    <div class="user-info">
+      <div class="user-avatar" id="sidebarAvatar" onclick="openProfileModal()">HR</div>
+      <div class="user-name" id="sidebarName">HR Name</div>
+      <div class="user-role" id="sidebarRole">Department</div>
+    </div>
+    <a class="active" onclick="showSection('hr-dashboard','.sidebar',event)">📊 Dashboard</a>
+    <a onclick="showSection('hr-postjob','.sidebar',event)">📝 Post Job</a>
+    <a onclick="showSection('hr-analytics','.sidebar',event)">📈 Analytics</a>
+    <a onclick="showSection('hr-messages','.sidebar',event)">💬 Messages</a>
+    <a onclick="showSection('hr-profile','.sidebar',event)">👤 Profile</a>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
   </div>
-  <div class="main-content">
-    <div class="card">
-      <h2>Welcome, <span id="hr-name">Loading...</span></h2>
-      <p><strong>Email:</strong> <span id="hr-email"></span></p>
-      <p><strong>Employee ID:</strong> <span id="hr-empid"></span></p>
+
+  <!-- Main Content -->
+  <div class="main">
+
+    <!-- Dashboard -->
+    <div id="hr-dashboard" class="section" style="display:block;">
+      <h1>HR Dashboard Overview</h1>
+      <div class="stats">
+        <div class="card">
+          <span class="card-number" id="totalJobs">-</span>
+          <span class="card-label">Jobs Posted</span>
+        </div>
+        <div class="card">
+          <span class="card-number" id="totalApplicants">-</span>
+          <span class="card-label">Total Applicants</span>
+        </div>
+        <div class="card">
+          <span class="card-number" id="avgMatch">-</span>
+          <span class="card-label">Avg Match Score</span>
+        </div>
+        <div class="card">
+          <span class="card-number" id="pendingReviews">-</span>
+          <span class="card-label">Pending Reviews</span>
+        </div>
+      </div>
+      <h2>Recent Job Applications</h2>
+      <div id="jobApplications" class="job-applications"></div>
     </div>
 
-    <div id="profile" class="section active">
-      <h1>My Profile</h1>
-      <div class="card">
-        <div style="display: flex; align-items: center; gap: 30px;">
-          <img id="profile-pic" src="default.jpg" alt="Profile Picture" />
-          <div>
-            <p><strong>Name:</strong> <span id="profile-name"></span></p>
-            <p><strong>Email:</strong> <span id="profile-email"></span></p>
-            <p><strong>Contact:</strong> <span id="profile-contact"></span></p>
-            <p><strong>DOB:</strong> <span id="profile-dob"></span></p>
-            <p><strong>Company:</strong> <span id="profile-company"></span></p>
-            <p><strong>Experience:</strong> <span id="profile-experience"></span></p>
-            <p><strong>About Me:</strong> <span id="profile-bio"></span></p>
-            <button id="edit-profile-btn">Edit Profile</button>
-          </div>
+    <!-- Post Job -->
+    <div id="hr-postjob" class="section">
+      <h1>Post New Job</h1>
+      <form id="jobForm" class="form-card" onsubmit="postJob(event)">
+        <div class="form-group">
+          <label>Job Title *</label>
+          <input type="text" name="title" required placeholder="e.g. Senior Software Developer">
+        </div>
+        <div class="form-group">
+          <label>Job Description *</label>
+          <textarea name="description" required rows="5" placeholder="Describe the role, responsibilities, and requirements..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" name="location" placeholder="e.g. Bengaluru, Karnataka">
+        </div>
+        <div class="form-group">
+          <label>Required Skills</label>
+          <input type="text" name="skills" placeholder="e.g. JavaScript, React, Node.js">
+        </div>
+        <div class="form-group">
+          <label>Employment Type</label>
+          <select name="type" required>
+            <option value="">Select Type</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Contract">Contract</option>
+            <option value="Internship">Internship</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Salary Range</label>
+          <input type="text" name="salary" placeholder="e.g. ₹8-12 LPA">
+        </div>
+        <button type="submit" class="btn btn-primary">📝 Post Job</button>
+      </form>
+      <h2>My Posted Jobs</h2>
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Job Title</th>
+            <th>Location</th>
+            <th>Applicants</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="myJobsTable"></tbody>
+      </table>
+    </div>
+
+    <!-- Analytics -->
+    <div id="hr-analytics" class="section">
+      <h1>Job Analytics & Reports</h1>
+      <div class="chart-container">
+        <h3>Applications by Job</h3>
+        <canvas id="jobBarChart" width="400" height="200"></canvas>
+      </div>
+      <div class="stats" id="analyticsStats">
+        <div class="card">
+          <span class="card-number" id="mostPopularJob">-</span>
+          <span class="card-label">Most Popular Job</span>
+        </div>
+        <div class="card">
+          <span class="card-number" id="highestApplications">-</span>
+          <span class="card-label">Highest Applications</span>
+        </div>
+        <div class="card">
+          <span class="card-number" id="bestMatchRate">-</span>
+          <span class="card-label">Best Match Rate</span>
+        </div>
+      </div>
+      <div class="form-card">
+        <h3>Export Data</h3>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="exportCSV()">📊 Export Applicants CSV</button>
+          <button class="btn btn-success" onclick="exportJobsCSV()">📋 Export Jobs CSV</button>
+          <button class="btn btn-warning" onclick="generateReport()">📄 Generate Report</button>
         </div>
       </div>
     </div>
 
-    <div id="edit-profile-section" class="section">
-      <h1>Edit Profile</h1>
-      <div class="card">
-        <form id="edit-profile-form">
-          <label>Full Name</label><input type="text" id="edit-name" />
-          <label>Contact</label><input type="text" id="edit-contact" />
-          <label>Date of Birth</label><input type="date" id="edit-dob" />
-          <label>Company</label><input type="text" id="edit-company" />
-          <label>Experience</label><input type="text" id="edit-experience" />
-          <label>Bio</label><textarea id="edit-bio"></textarea>
-          <button type="submit">Save Changes</button>
-        </form>
+    <!-- Messages -->
+    <div id="hr-messages" class="section">
+      <h1>Messages</h1>
+      <div class="chat-container">
+        <div class="chat-header">💬 Team Communication</div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+          <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+          <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+        </div>
       </div>
     </div>
 
-    
-    <div id="employee" class="section ">
-      <h1>Employee Management</h1>
-      <div class="card">
-        <h2>Add Employee</h2>
-        <form id="add-employee-form">
-          <input type="text" id="emp-name" placeholder="Employee Name" required />
-          <input type="email" id="emp-email" placeholder="Employee Email" required />
-          <input type="text" id="emp-id" placeholder="Employee ID" required />
-          <input type="text" id="emp-designation" placeholder="Designation" required />
-          <input type="text" id="emp-contact" placeholder="Contact Number" required />
-          <button type="submit">Add Employee</button>
-        </form>
+    <!-- Profile -->
+    <div id="hr-profile" class="section">
+      <h1>My Profile</h1>
+      <div class="form-card">
+        <div class="avatar-upload">
+          <div class="avatar-preview" id="profileAvatar" onclick="document.getElementById('avatarInput').click()">HR</div>
+          <input type="file" id="avatarInput" accept="image/*" onchange="updateAvatar(event)" style="display: none;">
+          <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">Upload Photo</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="profileName" placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="profileEmail" placeholder="Enter your email">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="profilePhone" placeholder="Enter your phone number">
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" id="profileDepartment" placeholder="Enter your department">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea id="profileBio" rows="4" placeholder="Tell us about yourself..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Skills</label>
+          <input type="text" id="profileSkills" placeholder="Enter your skills (comma separated)">
+        </div>
+        <div style="display: flex; gap: 15px; margin-top: 20px;">
+          <button class="btn btn-primary" onclick="saveProfile()">💾 Save Profile</button>
+          <button class="btn btn-success" onclick="previewProfile()">👁️ Preview Profile</button>
+          <button class="btn btn-warning" onclick="changePassword()">🔐 Change Password</button>
+        </div>
       </div>
-      <div class="card">
-        <h2>Employee List</h2>
-        <table>
-          <thead>
-            <tr><th>Name</th><th>Email</th><th>ID</th><th>Designation</th><th>Contact</th><th>Action</th></tr>
-          </thead>
-          <tbody id="employee-table-body"></tbody>
-        </table>
+      <!-- Skills Section -->
+      <div class="form-card">
+        <h3>🎯 Skills & Expertise</h3>
+        <div id="skillsList" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;"></div>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="newSkill" placeholder="Add a new skill">
+          <button class="btn btn-primary" onclick="addSkill()">Add Skill</button>
+        </div>
+      </div>
+      <!-- Experience Section -->
+      <div class="form-card">
+        <h3>💼 Experience & Projects</h3>
+        <div id="experienceList"></div>
+        <button class="btn btn-success" onclick="addExperience()">+ Add Experience</button>
       </div>
     </div>
-  
-    <div id="leave" class="section"><h1>Leave Management</h1><div class="card"><p>View and approve leave requests.</p></div></div>
-    <div id="posting" class="section"><h1>Job Posting</h1><div class="card"><form id="jobPostForm"><input type="text" id="jobTitle" placeholder="Job Title" /><textarea id="jobDesc" placeholder="Job Description"></textarea><button type="submit">Post Job</button></form></div></div>
-    <div id="interview" class="section"><h1>Interview Tracker</h1><div class="card"><p>Track interview progress here.</p></div></div>
-    <div id="resumes" class="section"><h1>Resume Review</h1><div class="card"><p>View and shortlist candidate resumes.</p></div></div>
-    <div id="stats" class="section"><h1>Dashboard Metrics</h1><div class="card">
-      <p>Total Jobs Posted: <span id="total-jobs">Loading...</span></p>
-      <p>Total Applications Received: <span id="total-apps">Loading...</span></p>
-    </div></div>
   </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Profile Settings</h2>
+        <span class="close" onclick="closeProfileModal()">&times;</span>
+      </div>
+      <div class="avatar-upload">
+        <div class="avatar-preview" id="modalAvatar" onclick="document.getElementById('modalAvatarInput').click()">HR</div>
+        <input type="file" id="modalAvatarInput" accept="image/*" onchange="updateModalAvatar(event)">
+        <button class="upload-btn" onclick="document.getElementById('modalAvatarInput').click()">Change Photo</button>
+      </div>
+      <div class="form-group">
+        <label>Display Name</label>
+        <input type="text" id="modalName" placeholder="Enter display name">
+      </div>
+      <div style="display: flex; gap: 15px; margin-top: 20px;">
+        <button class="btn btn-primary" onclick="saveModalProfile()">Save</button>
+        <button class="btn btn-danger" onclick="closeProfileModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="notification-area" style="position:fixed;top:28px;right:28px;z-index:9999;"></div>
+
+  <script src="frontend-api.js"></script>
+  <script src="hr_dashboard.js"></script>
 </body>
 </html>

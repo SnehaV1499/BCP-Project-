@@ -2,100 +2,251 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Dashboard - JobNest</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-    body { display: flex; height: 100vh; background-color: #1b103c; color: white; }
-    .sidebar { width: 230px; background-color: #221347; padding: 20px 15px; display: flex; flex-direction: column; align-items: center; border-right: 2px solid #4a3a7a; }
-    .sidebar img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #a383ff; }
-    .sidebar h2 { color: #a383ff; font-size: 20px; margin: 10px 0 5px; }
-    .sidebar p { font-size: 13px; text-align: center; margin-bottom: 20px; color: #ccc; }
-    .sidebar a { text-decoration: none; color: white; margin: 6px 0; padding: 10px 12px; border-radius: 6px; transition: 0.2s; width: 100%; text-align: center; }
-    .sidebar a:hover, .sidebar a.active { background-color: #a383ff; color: #1b103c; font-weight: bold; }
-    .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-    .main-content h1 { margin-bottom: 20px; font-size: 28px; border-bottom: 2px solid #a383ff; padding-bottom: 10px; }
-    .section { display: none; }
-    .section.active { display: block; }
-    .logout { margin-top: auto; text-align: center; }
-    .logout a { color: #ccc; font-size: 14px; text-decoration: none; }
-    .logout a:hover { text-decoration: underline; }
-    input, select, textarea, button { padding: 10px; margin: 8px 0; width: 100%; border-radius: 6px; border: none; }
-    input, select, textarea { background-color: #4a3a7a; color: white; }
-    button { background-color: #a383ff; color: #1b103c; font-weight: bold; cursor: pointer; }
-    button:hover { background-color: #c1aaff; }
-    .job-card { background-color: #2a1e5c; padding: 20px; margin-bottom: 15px; border-radius: 10px; }
-    .job-card h3 { margin: 0; }
-    .job-card p { margin: 5px 0; }
-    .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
-    .profile-header img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #a383ff; }
-    .tracking-category { margin-top: 20px; }
-    .tracking-category h3 { border-bottom: 1px solid #a383ff; padding-bottom: 5px; margin-bottom: 10px; }
-  </style>
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="sidebar">
-    <img id="sidebarPic" src="" alt="Profile Pic">
-    <h2 id="sidebarName">Student</h2>
-    <p id="sidebarEmail">student@example.com</p>
-    <a href="#" class="nav-link active" data-section="profile">👤 Profile</a>
-    <a href="#" class="nav-link" data-section="jobs">💼 Jobs</a>
-    <a href="#" class="nav-link" data-section="applied">📄 Applied</a>
-    <a href="#" class="nav-link" data-section="tracking">📊 Tracking</a>
-    <div class="logout">
-      <a href="index.html">← Logout</a>
+
+<div class="sidebar">
+  <h2>Student Panel</h2>
+  <div class="user-info">
+    <div class="user-avatar" id="sidebarAvatar" onclick="openProfileModal()">ST</div>
+    <div class="user-name" id="sidebarName">Student Name</div>
+    <div class="user-role" id="sidebarRole">Major</div>
+  </div>
+  <a class="active" onclick="showSection('student-dashboard','.sidebar',event)">📊 Dashboard</a>
+  <a onclick="showSection('student-browse','.sidebar',event)">🔍 Browse Jobs</a>
+  <a onclick="showSection('student-applications','.sidebar',event)">📋 My Applications</a>
+  <a onclick="showSection('student-messages','.sidebar',event)">💬 Messages</a>
+  <a onclick="showSection('student-profile','.sidebar',event)">👤 Profile</a>
+  <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+</div>
+
+<div class="main">
+
+  <!-- Dashboard -->
+  <div id="student-dashboard" class="section" style="display:block;">
+    <h1>Student Dashboard Overview</h1>
+    <div class="stats">
+      <div class="card">
+        <span class="card-number" id="appliedCount">-</span>
+        <span class="card-label">Jobs Applied</span>
+      </div>
+      <div class="card">
+        <span class="card-number" id="interviewCount">-</span>
+        <span class="card-label">Interviews Scheduled</span>
+      </div>
+      <div class="card">
+        <span class="card-number" id="savedCount">-</span>
+        <span class="card-label">Saved Jobs</span>
+      </div>
+      <div class="card">
+        <span class="card-number" id="responseRate">-</span>
+        <span class="card-label">Response Rate</span>
+      </div>
     </div>
+    <h2>Recent Activity</h2>
+    <div id="recentActivity" class="job-applications"></div>
   </div>
 
-  <div class="main-content">
-    <div id="profile" class="section active">
-      <h1>Profile</h1>
-      <div class="profile-header">
-        <img id="profilePic" src="" alt="Student Photo">
-        <div>
-          <input type="file" id="picUpload">
+  <!-- Browse Jobs -->
+  <div id="student-browse" class="section">
+    <h1>Browse Available Jobs</h1>
+    <div class="form-card">
+      <h3>🔍 Search & Filter Jobs</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 15px; align-items: end;">
+        <div class="form-group">
+          <label>Search Keywords</label>
+          <input type="text" id="searchKeywords" placeholder="e.g. JavaScript, React">
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <select id="locationFilter">
+            <option value="">All Locations</option>
+            <option value="Bengaluru">Bengaluru</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Remote">Remote</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Job Type</label>
+          <select id="typeFilter">
+            <option value="">All Types</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Internship">Internship</option>
+            <option value="Contract">Contract</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="searchJobs()">Search</button>
+      </div>
+    </div>
+    <div id="jobList" class="job-list"></div>
+  </div>
+
+  <!-- My Applications -->
+  <div id="student-applications" class="section">
+    <h1>My Job Applications</h1>
+    <div class="form-card">
+      <h3>📊 Application Statistics</h3>
+      <div class="stats">
+        <div class="card">
+          <span class="card-number" id="appStatTotal">-</span>
+          <span class="card-label">Total Applications</span>
+        </div>
+        <div class="card">
+          <span class="card-number" id="appStatReview">-</span>
+          <span class="card-label">In Review</span>
+        </div>
+        <div class="card">
+          <span class="card-number" id="appStatInterviews">-</span>
+          <span class="card-label">Interviews</span>
+        </div>
+        <div class="card">
+          <span class="card-number" id="appStatOffers">-</span>
+          <span class="card-label">Offers</span>
         </div>
       </div>
-      <form id="updateForm">
-        <label>Name</label>
-        <input id="name" type="text">
-        <label>Email</label>
-        <input id="email" type="email">
-        <label>Student ID</label>
-        <input id="studentId" type="text" disabled>
-        <label>Skills</label>
-        <textarea id="skills"></textarea>
-        <label>Resume</label>
-        <input type="file" id="resumeUpload">
-        <button type="submit">Update</button>
-      </form>
     </div>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Company</th>
+          <th>Applied Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="myApplicationsTable"></tbody>
+    </table>
+  </div>
 
-    <div id="jobs" class="section">
-      <h1>Available Jobs</h1>
-      <div id="jobList"></div>
-    </div>
-
-    <div id="applied" class="section">
-      <h1>Applied Jobs</h1>
-      <div id="appliedJobs"></div>
-    </div>
-
-    <div id="tracking" class="section">
-      <h1>Tracking</h1>
-      <div class="tracking-category">
-        <h3>Selected</h3>
-        <div id="selectedList"></div>
-      </div>
-      <div class="tracking-category">
-        <h3>Waiting</h3>
-        <div id="waitingList"></div>
-      </div>
-      <div class="tracking-category">
-        <h3>Rejected</h3>
-        <div id="rejectedList"></div>
+  <!-- Messages -->
+  <div id="student-messages" class="section">
+    <h1>Messages</h1>
+    <div class="chat-container">
+      <div class="chat-header">💬 Career Support Chat</div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+        <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
       </div>
     </div>
   </div>
+
+  <!-- Profile -->
+  <div id="student-profile" class="section">
+    <h1>My Profile</h1>
+    <div class="form-card">
+      <div class="avatar-upload">
+        <div class="avatar-preview" id="profileAvatar" onclick="document.getElementById('avatarInput').click()">ST</div>
+        <input type="file" id="avatarInput" accept="image/*" onchange="updateAvatar(event)" style="display: none;">
+        <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">Upload Photo</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="profileName" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="profileEmail" placeholder="Enter your email">
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="profilePhone" placeholder="Enter your phone number">
+        </div>
+        <div class="form-group">
+          <label>Course/Major</label>
+          <input type="text" id="profileCourse" placeholder="Enter your course">
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label>University/College</label>
+          <input type="text" id="profileUniversity" placeholder="Enter your institution">
+        </div>
+        <div class="form-group">
+          <label>Graduation Year</label>
+          <select id="profileGradYear"></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Skills</label>
+        <input type="text" id="profileSkills" placeholder="Enter your skills (comma separated)">
+      </div>
+      <div class="form-group">
+        <label>Bio</label>
+        <textarea id="profileBio" rows="4" placeholder="Tell us about yourself..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Resume/CV</label>
+        <input type="file" id="profileResume" accept=".pdf,.doc,.docx">
+        <small style="color: #666;">Upload your latest resume (PDF, DOC, or DOCX)</small>
+      </div>
+      <div style="display: flex; gap: 15px; margin-top: 20px;">
+        <button class="btn btn-primary" onclick="saveProfile()">💾 Save Profile</button>
+        <button class="btn btn-success" onclick="previewProfile()">👁️ Preview Profile</button>
+        <button class="btn btn-warning" onclick="changePassword()">🔐 Change Password</button>
+      </div>
+    </div>
+    <!-- Skills Section -->
+    <div class="form-card">
+      <h3>🎯 Skills & Expertise</h3>
+      <div id="skillsList" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;"></div>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="newSkill" placeholder="Add a new skill">
+        <button class="btn btn-primary" onclick="addSkill()">Add Skill</button>
+      </div>
+    </div>
+    <!-- Experience Section -->
+    <div class="form-card">
+      <h3>💼 Experience & Projects</h3>
+      <div id="experienceList"></div>
+      <button class="btn btn-success" onclick="addExperience()">+ Add Experience</button>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Quick Profile Update</h2>
+      <span class="close" onclick="closeProfileModal()">&times;</span>
+    </div>
+    <div class="avatar-upload">
+      <div class="avatar-preview" id="modalAvatar" onclick="document.getElementById('modalAvatarInput').click()">ST</div>
+      <input type="file" id="modalAvatarInput" accept="image/*" onchange="updateModalAvatar(event)">
+      <button class="upload-btn" onclick="document.getElementById('modalAvatarInput').click()">Change Photo</button>
+    </div>
+    <div class="form-group">
+      <label>Display Name</label>
+      <input type="text" id="modalName" placeholder="Enter display name">
+    </div>
+    <div class="form-group">
+      <label>Status</label>
+      <select id="modalStatus">
+        <option value="Looking for opportunities">Looking for opportunities</option>
+        <option value="Open to offers">Open to offers</option>
+        <option value="Currently employed">Currently employed</option>
+        <option value="Studying">Studying</option>
+      </select>
+    </div>
+    <div style="display: flex; gap: 15px; margin-top: 20px;">
+      <button class="btn btn-primary" onclick="saveModalProfile()">Save</button>
+      <button class="btn btn-danger" onclick="closeProfileModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="notification-area" style="position:fixed;top:28px;right:28px;z-index:9999;"></div>
+
+<script src="frontend-api.js"></script>
+<script src="student_dashboard.js"></script>
 </body>
 </html>
